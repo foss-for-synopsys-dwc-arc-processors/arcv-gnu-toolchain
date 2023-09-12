@@ -326,10 +326,11 @@ else
 GCCPKGVER :=
 endif
 
+TARGET_DIRS :=
 $(srcdir)/%/.git:
 	cd $(srcdir) && \
 	flock `git rev-parse --git-dir`/config git submodule init $(dir $@) && \
-	flock `git rev-parse --git-dir`/config git submodule update $(dir $@)
+	flock `git rev-parse --git-dir`/config git submodule update --depth 10 $(if $(filter $*,$(TARGET_DIRS)),--remote --no-single-branch,) $(dir $@)
 
 stamps/install-host-gcc: $(GCC_SRCDIR) $(GCC_SRC_GIT)
 	if test -f $</contrib/download_prerequisites && test "@NEED_GCC_EXTERNAL_LIBRARIES@" = "true"; then cd $< && ./contrib/download_prerequisites; fi
