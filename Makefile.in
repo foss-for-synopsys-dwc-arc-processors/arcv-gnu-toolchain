@@ -319,10 +319,11 @@ else
 GCCPKGVER :=
 endif
 
+TARGET_DIRS :=
 $(srcdir)/%/.git:
 	cd $(srcdir) && \
 	flock `git rev-parse --git-dir`/config git submodule init $(dir $@) && \
-	flock `git rev-parse --git-dir`/config git submodule update $(dir $@)
+	flock `git rev-parse --git-dir`/config git submodule update --depth 10 $(if $(filter $*,$(TARGET_DIRS)),--remote --no-single-branch,) $(dir $@)
 
 #
 # GLIBC
