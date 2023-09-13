@@ -201,6 +201,15 @@ report-binutils: report-binutils-@default_target@
 report-gdb: report-gdb-@default_target@
 
 .PHONY: build-sim
+ifeq ($(SIM), nsim)
+# Using nsim simulator.
+ifeq (@default_target@, linux)
+$(error nSIM not supported)
+endif
+SIM_PATH:=$(srcdir)/scripts/wrapper/nsim:$(srcdir)/scripts
+SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)" SIM="$(SIM)"
+SIM_STAMP:= nsim-validation stamps/install-python-package
+else
 ifeq ($(SIM),qemu)
 SIM_PATH:=$(srcdir)/scripts/wrapper/qemu:$(srcdir)/scripts
 SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)"
@@ -223,7 +232,8 @@ ifeq ($(SIM),gdb)
 SIM_PATH:=$(INSTALL_DIR)/bin
 SIM_PREPARE:=
 else
-$(error "Only support SIM=spike, SIM=gdb or SIM=qemu (default).")
+$(error "Only support SIM=spike, SIM=gdb, SIM=nsim or SIM=qemu (default).")
+endif
 endif
 endif
 endif
@@ -1065,6 +1075,11 @@ stamps/check-gdb-newlib-nano: stamps/build-gcc-newlib-stage2 stamps/build-gdb-ne
 stamps/check-gdb-linux: stamps/build-gcc-linux-stage2 stamps/build-gdb-linux $(SIM_STAMP) stamps/build-dejagnu
 	$(SIM_PREPARE) $(MAKE) -C build-gdb-linux check-gdb -k "RUNTESTFLAGS=--target_board='$(GLIBC_TARGET_BOARDS)'" || true
 	date > $@
+
+nsim-validation:
+ifeq ($(shell command -v nsimdrv),)
+	$(error nsimdrv not detected)
+endif
 
 .PHONY: report-gcc-newlib report-gcc-newlib-nano
 report-gcc-newlib: stamps/check-gcc-newlib

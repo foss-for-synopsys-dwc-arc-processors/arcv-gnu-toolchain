@@ -1,0 +1,3 @@
+#!/bin/bash
+
+nsimdrv -p nsim_isa_family=rv32 -p nsim_semihosting=1 -p nsim_isa_code_density_option=1 "$@"
