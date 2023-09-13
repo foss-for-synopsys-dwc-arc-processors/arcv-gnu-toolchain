@@ -238,6 +238,25 @@ report-binutils: report-binutils-@default_target@
 report-gdb: report-gdb-@default_target@
 
 .PHONY: build-sim
+ifeq ($(SIM), nsim)
+# Using nsim simulator.
+ifeq (@default_target@, linux)
+$(error nSIM not supported)
+endif
+ifeq ($(shell command -v nsimdrv),)
+	$(error nsimdrv is not detected)
+endif
+DEJAGNU_SIM_LINK_FLAGS := \
+	-specs=semihost.specs -specs=arcv.specs \
+	-Wl,-defsym=txtmem_addr=0x0 -Wl,-defsym=datamem_addr=0x10000000 \
+	-Wl,-defsym=txtmem_len=32M -Wl,-defsym=datamem_len=32M
+DEJAGNU_SIM_LDSCRIPT := -Tarcv.ld
+SIM_PATH:=$(srcdir)/scripts/wrapper/nsim:$(srcdir)/scripts
+SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)" \
+	DEJAGNU_SIM_LINK_FLAGS="$(DEJAGNU_SIM_LINK_FLAGS)"; export DEJAGNU_SIM_LINK_FLAGS; \
+	DEJAGNU_SIM_LDSCRIPT="$(DEJAGNU_SIM_LDSCRIPT)"; export DEJAGNU_SIM_LDSCRIPT;
+SIM_STAMP:=
+else
 ifeq ($(SIM),qemu)
 SIM_PATH:=$(srcdir)/scripts/wrapper/qemu:$(srcdir)/scripts
 SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)"
@@ -260,7 +279,8 @@ ifeq ($(SIM),gdb)
 SIM_PATH:=$(INSTALL_DIR)/bin
 SIM_PREPARE:=
 else
-$(error "Only support SIM=spike, SIM=gdb or SIM=qemu (default).")
+$(error "Only support SIM=spike, SIM=gdb, SIM=nsim or SIM=qemu (default).")
+endif
 endif
 endif
 endif
