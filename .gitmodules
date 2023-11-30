@@ -1,7 +1,7 @@
 [submodule "binutils"]
 	path = binutils
-	url = https://sourceware.org/git/binutils-gdb.git
-	branch = binutils-2_41-release-point
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
+	branch = arcvx-2_41
 [submodule "gcc"]
 	path = gcc
 	url = https://gcc.gnu.org/git/gcc.git
