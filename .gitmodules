@@ -15,8 +15,8 @@
 	branch = arcvx
 [submodule "newlib"]
 	path = newlib
-	url = https://sourceware.org/git/newlib-cygwin.git
-	branch = master
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/newlib.git
+	branch = arcvx
 [submodule "gdb"]
 	path = gdb
 	url = https://sourceware.org/git/binutils-gdb.git
