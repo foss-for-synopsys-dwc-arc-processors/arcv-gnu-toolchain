@@ -319,7 +319,7 @@ else
 GCCPKGVER :=
 endif
 
-TARGET_DIRS :=
+TARGET_DIRS := dejagnu
 $(srcdir)/%/.git:
 	cd $(srcdir) && \
 	flock `git rev-parse --git-dir`/config git submodule init $(dir $@) && \
