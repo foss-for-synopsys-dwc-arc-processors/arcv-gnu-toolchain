@@ -11,8 +11,8 @@
 	url = https://sourceware.org/git/glibc.git
 [submodule "dejagnu"]
 	path = dejagnu
-	url = https://git.savannah.gnu.org/git/dejagnu.git
-	branch = master
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/dejagnu.git
+	branch = arcvx
 [submodule "newlib"]
 	path = newlib
 	url = https://sourceware.org/git/newlib-cygwin.git
