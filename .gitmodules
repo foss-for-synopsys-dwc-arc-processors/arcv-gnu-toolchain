@@ -4,8 +4,8 @@
 	branch = arcvx-2_41
 [submodule "gcc"]
 	path = gcc
-	url = https://gcc.gnu.org/git/gcc.git
-	branch = releases/gcc-13
+	url = git@github.com:foss-for-synopsys-dwc-arc-processors/gcc-arcv
+	branch = arcvx-gcc13
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
