@@ -81,9 +81,24 @@ LINUX_TUPLE  ?= $(call make_tuple,$(XLEN),linux-gnu)
 NEWLIB_TUPLE ?= $(call make_tuple,$(XLEN),elf)
 MUSL_TUPLE ?= $(call make_tuple,$(XLEN),linux-musl)
 
-CFLAGS_FOR_TARGET := $(CFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @target_cflags@ @cmodel@
-CXXFLAGS_FOR_TARGET := $(CXXFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @target_cxxflags@ @cmodel@
-ASFLAGS_FOR_TARGET := $(ASFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @cmodel@
+# Do not pass -mcmodel=medlow if it is selected since it is a default memory
+# model for RISC-V targets. It allows to build to use --with-multilib-generator
+# with different models like this:
+#
+#     --with-multilib-generator="rv32i-ilp32--;rv64imac-lp64--; --cmodel=medany"
+#
+# If -mcmodel=medlow is passed for building libraries then alternative models
+# from multilib generator are ignored and all library sets are built with
+# medlow model.
+ifeq (@cmodel@,-mcmodel=medlow)
+CMODEL_FOR_TARGET :=
+else
+CMODEL_FOR_TARGET := @cmodel@
+endif
+
+CFLAGS_FOR_TARGET := $(CFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @target_cflags@ $(CMODEL_FOR_TARGET)
+CXXFLAGS_FOR_TARGET := $(CXXFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @target_cxxflags@ $(CMODEL_FOR_TARGET)
+ASFLAGS_FOR_TARGET := $(ASFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) $(CMODEL_FOR_TARGET)
 # --with-expat is required to enable XML support used by OpenOCD.
 BINUTILS_TARGET_FLAGS := --with-expat=yes $(BINUTILS_TARGET_FLAGS_EXTRA)
 BINUTILS_NATIVE_FLAGS := $(BINUTILS_NATIVE_FLAGS_EXTRA)
