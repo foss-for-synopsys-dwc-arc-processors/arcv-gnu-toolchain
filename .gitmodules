@@ -1,11 +1,11 @@
 [submodule "binutils"]
 	path = binutils
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
-	branch = arcvx-2_42
+	branch = arc-2024.12
 [submodule "gcc"]
 	path = gcc
 	url = git@github.com:foss-for-synopsys-dwc-arc-processors/gcc-arcv
-	branch = arcvx-gcc13
+	branch = arc-2024.12
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
@@ -16,7 +16,7 @@
 [submodule "newlib"]
 	path = newlib
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/newlib.git
-	branch = arcvx
+	branch = arc-2024.12
 [submodule "gdb"]
 	path = gdb
 	url = https://sourceware.org/git/binutils-gdb.git
