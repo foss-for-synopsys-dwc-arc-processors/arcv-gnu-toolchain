@@ -653,6 +653,8 @@ WITH_TUNE
 WITH_ABI
 WITH_ARCH
 enable_default_pie
+vendor_alias
+vendor
 debug_info
 default_target
 FETCHER
@@ -717,6 +719,8 @@ enable_option_checking
 enable_linux
 enable_debug_info
 enable_default_pie
+with_vendor
+with_vendor_alias
 with_arch
 with_abi
 with_tune
@@ -1399,6 +1403,9 @@ Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
   --with-arch=rv64gc      Sets the base RISC-V ISA, defaults to rv64gc
+  --with-vendor=unknown   Sets the vendor part of the triplet
+  --with-vendor-alias=unknown
+                          Sets the vendor part of the triplet alias
   --with-abi=lp64d        Sets the base RISC-V ABI, defaults to lp64d
   --with-tune=rocket      Set the base RISC-V CPU, defaults to rocket
   --with-isa-spec=20191213
@@ -3988,6 +3995,26 @@ fi
 
 
 
+# Check whether --with-vendor was given.
+if test "${with_vendor+set}" = set; then :
+  withval=$with_vendor;
+else
+  with_vendor=unknown
+
+fi
+
+
+
+# Check whether --with-vendor_alias was given.
+if test "${with_vendor_alias+set}" = set; then :
+  withval=$with_vendor_alias;
+else
+  with_vendor_alias=unknown
+
+fi
+
+
+
 # Check whether --with-arch was given.
 if test ${with_arch+y}
 then :
@@ -4073,6 +4100,10 @@ then :
 	 ;;
 esac
 fi
+
+vendor=$with_vendor
+
+vendor_alias=$with_vendor_alias
 
 WITH_ARCH=--with-arch=$with_arch
 

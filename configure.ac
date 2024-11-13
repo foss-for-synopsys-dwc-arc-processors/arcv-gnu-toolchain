@@ -78,6 +78,19 @@ AS_IF([test "x$enable_default_pie" != xyes],
 	[AC_SUBST(enable_default_pie, "--disable-default-pie")],
 	[AC_SUBST(enable_default_pie, "--enable-default-pie")])
 
+AC_ARG_WITH(vendor,
+	[AS_HELP_STRING([--with-vendor=unknown],
+		[Sets the vendor part of the triplet])],
+	[],
+	[with_vendor=unknown]
+	)
+
+AC_ARG_WITH(vendor_alias,
+	[AS_HELP_STRING([--with-vendor-alias=unknown],
+		[Sets the vendor part of the triplet alias])],
+	[],
+	[with_vendor_alias=unknown]
+	)
 
 AC_ARG_WITH(arch,
 	[AS_HELP_STRING([--with-arch=rv64gc],
@@ -132,6 +145,8 @@ AS_IF([test "x$with_abi" = xdefault],
 		[AC_MSG_ERROR([Unknown arch])]
 	)])
 
+AC_SUBST(vendor, $with_vendor)
+AC_SUBST(vendor_alias, $with_vendor_alias)
 AC_SUBST(WITH_ARCH, --with-arch=$with_arch)
 AC_SUBST(WITH_ABI, --with-abi=$with_abi)
 AC_SUBST(WITH_TUNE, --with-tune=$with_tune)
