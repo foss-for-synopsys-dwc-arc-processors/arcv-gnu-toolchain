@@ -76,7 +76,7 @@ ifneq ($(XLEN),32)
 	XLEN := 64
 endif
 
-make_tuple = riscv$(1)-unknown-$(2)
+make_tuple = riscv$(1)-@vendor@-$(2)
 LINUX_TUPLE  ?= $(call make_tuple,$(XLEN),linux-gnu)
 NEWLIB_TUPLE ?= $(call make_tuple,$(XLEN),elf)
 MUSL_TUPLE ?= $(call make_tuple,$(XLEN),linux-musl)
@@ -1198,3 +1198,14 @@ Makefile: $(srcdir)/Makefile.in config.status
 
 config.status: $(srcdir)/configure
 	CONFIG_SHELL="$(SHELL)" $(SHELL) ./config.status --recheck
+
+.PHONY: aliases
+aliases:
+ifneq (@vendor@,@vendor_alias@)
+	cd $(INSTALL_DIR)/bin && \
+	for file_name in riscv*-@vendor@-*; \
+	do \
+	    link_name=`echo $${file_name} | sed 's/@vendor@/@vendor_alias@/g'`; \
+	    ln -sf $${file_name} $${link_name}; \
+	done
+endif
