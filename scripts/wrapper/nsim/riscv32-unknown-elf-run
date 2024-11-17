@@ -1,3 +1,11 @@
 #!/bin/bash
 
-nsimdrv -p nsim_isa_family=rv32 -p nsim_semihosting=1 -p nsim_isa_code_density_option=1 "$@"
+family="$(march-to-cpu-opt --elf-file-path $1 --print-nsim-family)"
+isa="$(march-to-cpu-opt --elf-file-path $1 --print-nsim-isa)"
+
+nsimdrv \
+    -p nsim_isa_family=${family} \
+    -p nsim_isa_ext=${isa} \
+    -p nsim_semihosting=1 \
+    -p enable_exceptions=0 \
+    "$@"

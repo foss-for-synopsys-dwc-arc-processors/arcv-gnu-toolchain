@@ -38,6 +38,45 @@ SPIKE_EXT_NOT_ALLOWED = [
   "zvl4096b",
 ]
 
+NSIM_EXT_ALLOWED = [
+    "i", "m", "a", "f", "d", "c", "e", "h", "v",
+    "zfh",
+    "zfhmin",
+    "zhinx",
+    "zhinxmin",
+    "zfinx",
+    "zdinx",
+    "zfa",
+    "zicsr",
+    "zifencei",
+    "zicond",
+    "zihintpause",
+    "zba",
+    "zbb",
+    "zbc",
+    "zbs",
+    "zca",
+    "zcb",
+    "zcf",
+    "zcd",
+    "zcmp",
+    "zcmt",
+    "zicbom",
+    "zicboz",
+    "zicbop",
+    "zvl32b",
+    "zvl64b",
+    "zvl128b",
+    "zvl256b",
+    "zvl512b",
+    "zvl1024b",
+    "zve32x",
+    "zve32f",
+    "zve64x",
+    "zve64f",
+    "zve64d"
+]
+
 CPU_OPTIONS = {
   "xlen":            "",
   "vlen":            "",
@@ -59,6 +98,8 @@ def parse_opt(argv):
     parser.add_argument('--print-spike-isa', action='store_true', default=False)
     parser.add_argument('--print-spike-varch', action='store_true',
                         default=False)
+    parser.add_argument('--print-nsim-family', action='store_true', default=False)
+    parser.add_argument('--print-nsim-isa', action='store_true', default=False)
     opt = parser.parse_args()
     return opt
 
@@ -199,6 +240,18 @@ def print_spike_varch():
 
     return "vlen:{0},elen:{1}".format(CPU_OPTIONS['vlen'], CPU_OPTIONS['elen'])
 
+def print_nsim_family():
+    return "rv{0}".format(CPU_OPTIONS['xlen'])
+
+def print_nsim_isa():
+    cpu_options = ["-all"]
+
+    for ext in CPU_OPTIONS['extensions']:
+        if ext in NSIM_EXT_ALLOWED:
+            cpu_options.append(ext)
+
+    return ".".join(cpu_options)
+
 class TestArchStringParse(unittest.TestCase):
     def _test(self, arch, expected_arch_list, expected_vlen=0):
          exts = parse_march(arch)
@@ -296,6 +349,12 @@ def main(argv):
 
     if opt.print_spike_varch:
         print(print_spike_varch())
+
+    if opt.print_nsim_family:
+        print(print_nsim_family())
+
+    if opt.print_nsim_isa:
+        print(print_nsim_isa())
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
