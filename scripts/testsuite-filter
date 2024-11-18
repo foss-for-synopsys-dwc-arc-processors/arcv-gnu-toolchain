@@ -248,6 +248,8 @@ def filter_result(tool, libc, white_list_base_dir, unexpected_results):
         toollist = ['gcc', 'g++', 'gfortran']
     elif tool == 'binutils':
         toollist = ['binutils', 'ld', 'gas']
+    elif tool == 'newlib':
+        toollist = ['newlib']
     else:
         raise Exception("Unsupported tool `%s`" % tool)
 
@@ -292,7 +294,7 @@ def main():
 
     sum_files = sum_files.split(',')
     unexpected_results = read_sum(sum_files)
-    if tool in ['gcc', 'binutils']:
+    if tool in ['gcc', 'binutils', 'newlib']:
         rv = filter_result(tool, libc, white_list_base_dir,
                            unexpected_results)
     else:
