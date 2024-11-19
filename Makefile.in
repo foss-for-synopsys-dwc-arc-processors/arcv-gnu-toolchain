@@ -267,6 +267,11 @@ endif
 endif
 endif
 
+SIM_PREPARE_NANO := \
+	$(SIM_PREPARE) \
+	DEJAGNU_SIM_LINK_FLAGS="$(DEJAGNU_SIM_LINK_FLAGS) -specs=nano.specs"; \
+	export DEJAGNU_SIM_LINK_FLAGS;
+
 build-sim: $(SIM_STAMP)
 
 stamps/check-write-permission:
@@ -1108,7 +1113,7 @@ stamps/check-binutils-newlib: stamps/build-gcc-newlib-stage2 $(SIM_STAMP) stamps
 	date > $@
 
 stamps/check-binutils-newlib-nano: stamps/build-gcc-newlib-stage2 $(SIM_STAMP) stamps/build-dejagnu
-	$(SIM_PREPARE) $(MAKE) -C build-binutils-newlib check-binutils check-gas check-ld -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
+	$(SIM_PREPARE_NANO) $(MAKE) -C build-binutils-newlib check-binutils check-gas check-ld -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
 	date > $@
 
 stamps/check-binutils-linux: stamps/build-gcc-linux-stage2 $(SIM_STAMP) stamps/build-dejagnu
@@ -1120,7 +1125,7 @@ stamps/check-gdb-newlib: stamps/build-gcc-newlib-stage2 stamps/build-gdb-newlib 
 	date > $@
 
 stamps/check-gdb-newlib-nano: stamps/build-gcc-newlib-stage2 stamps/build-gdb-newlib $(SIM_STAMP) stamps/build-dejagnu
-	$(SIM_PREPARE) $(MAKE) -C build-gdb-newlib check-gdb -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
+	$(SIM_PREPARE_NANO) $(MAKE) -C build-gdb-newlib check-gdb -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
 	date > $@
 
 stamps/check-gdb-linux: stamps/build-gcc-linux-stage2 stamps/build-gdb-linux $(SIM_STAMP) stamps/build-dejagnu
