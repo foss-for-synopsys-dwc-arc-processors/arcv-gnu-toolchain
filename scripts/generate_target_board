@@ -53,7 +53,7 @@ def main(argv):
   target_board_list = []
   arch_abi_list = [options.build_arch_abi]
   if ' ' in options.build_arch_abi:
-    arch_abi_list = options.build_arch_abi.split (" ")
+    arch_abi_list = options.build_arch_abi.strip().split (" ")
 
   for one_arch_abi in arch_abi_list:
     target_board = generate_one_target_board(one_arch_abi, "", options)
