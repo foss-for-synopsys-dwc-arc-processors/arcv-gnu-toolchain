@@ -1,32 +1,27 @@
 [submodule "binutils"]
 	path = binutils
-	url = https://sourceware.org/git/binutils-gdb.git
-	branch = binutils-2_43-branch
-	shallow = true
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
+	branch = arc-2025.06
 [submodule "gcc"]
 	path = gcc
-	url = https://gcc.gnu.org/git/gcc.git
-	branch = releases/gcc-14
-	shallow = true
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/gcc
+	branch = arc-2025.06
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
 	shallow = true
 [submodule "dejagnu"]
 	path = dejagnu
-	url = https://git.savannah.gnu.org/git/dejagnu.git
-	branch = master
-	shallow = true
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/dejagnu
+	branch = arc-2025.06
 [submodule "newlib"]
 	path = newlib
-	url = https://sourceware.org/git/newlib-cygwin.git
-	branch = master
-	shallow = true
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/newlib
+	branch = arc-2025.06
 [submodule "gdb"]
 	path = gdb
-	url = https://sourceware.org/git/binutils-gdb.git
-	branch = gdb-15-branch
-	shallow = true
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
+	branch = arc-2025.06-gdb
 [submodule "qemu"]
 	path = qemu
 	url = https://gitlab.com/qemu-project/qemu.git
