@@ -47,8 +47,15 @@ AC_ARG_ENABLE(linux,
         [enable_linux=no]
         )
 
-AS_IF([test "x$enable_linux" != xno],
-	[AC_SUBST(default_target, linux)],
+AC_ARG_ENABLE(picolibc,
+        [AS_HELP_STRING([--enable-picolibc],
+		[set Picolibc as the default make target @<:@--disable-picolibc@:>@])],
+        [],
+        [enable_picolibc=no]
+        )
+
+AS_IF([test "x$enable_linux" != xno], [AC_SUBST(default_target, linux)],
+	[test "x$enable_picolibc" != xno], [AC_SUBST(default_target, picolibc)],
 	[AC_SUBST(default_target, newlib)])
 
 AC_ARG_ENABLE(debug_info,
@@ -349,6 +356,7 @@ AC_DEFUN([AX_ARG_WITH_SRC],
 AX_ARG_WITH_SRC(gcc, gcc)
 AX_ARG_WITH_SRC(binutils, binutils)
 AX_ARG_WITH_SRC(newlib, newlib)
+AX_ARG_WITH_SRC(picolibc, picolibc)
 AX_ARG_WITH_SRC(glibc, glibc)
 AX_ARG_WITH_SRC(musl, musl)
 AX_ARG_WITH_SRC(uclibc, uclibc-ng)
