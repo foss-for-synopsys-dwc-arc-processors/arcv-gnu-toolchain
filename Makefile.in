@@ -394,7 +394,7 @@ else
 GCCPKGVER :=
 endif
 
-TARGET_DIRS := binutils gdb gcc newlib dejagnu
+TARGET_DIRS := binutils gdb gcc newlib dejagnu picolibc
 $(srcdir)/%/.git:
 	cd $(srcdir) && \
 	flock `git rev-parse --git-dir`/config git submodule init $(dir $@) && \

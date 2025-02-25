@@ -50,3 +50,7 @@
 	path = uclibc-ng
 	url = https://github.com/wbx-github/uclibc-ng.git
 	shallow = true
+[submodule "picolibc"]
+	path = picolibc
+	url = https://github.com/foss-for-synopsys-dwc-arc-processors/picolibc
+	branch = arc-2025.06
