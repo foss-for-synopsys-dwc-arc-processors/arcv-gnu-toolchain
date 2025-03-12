@@ -662,8 +662,8 @@ stamps/build-binutils-newlib: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) $(PREPARATI
 		--disable-libdecnumber \
 		--disable-readline \
 		$(WITH_ISA_SPEC) \
-		CFLAGS="-O0 -g" \
-		CXXFLAGS="-O0 -g"
+		CFLAGS="$(CFLAGS) $(DEBUG_INFO)" \
+		CXXFLAGS="$(CXXFLAGS) $(DEBUG_INFO)"
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -685,8 +685,8 @@ stamps/build-gdb-newlib: $(GDB_SRCDIR) $(GDB_SRC_GIT) $(PREPARATION_STAMP)
 		--disable-ld \
 		--disable-gold \
 		--disable-gprof \
-		CFLAGS="-O0 -g" \
-		CXXFLAGS="-O0 -g"
+		CFLAGS="$(CFLAGS) $(DEBUG_INFO)" \
+		CXXFLAGS="$(CXXFLAGS) $(DEBUG_INFO)"
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -720,8 +720,8 @@ stamps/build-gcc-newlib-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binuti
 		$(WITH_TUNE) \
 		$(WITH_ISA_SPEC) \
 		$(GCC_EXTRA_CONFIGURE_FLAGS) \
-		CFLAGS="-O0 -g" \
-		CXXFLAGS="-O0 -g" \
+		CFLAGS="$(CFLAGS)" \
+		CXXFLAGS="$(CXXFLAGS)" \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@) all-gcc
@@ -836,8 +836,8 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 		$(WITH_TUNE) \
 		$(WITH_ISA_SPEC) \
 		$(GCC_EXTRA_CONFIGURE_FLAGS) \
-		CFLAGS="-O0 -g" \
-		CXXFLAGS="-O0 -g" \
+		CFLAGS="$(CFLAGS) $(DEBUG_INFO)" \
+		CXXFLAGS="$(CXXFLAGS) $(DEBUG_INFO)" \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)

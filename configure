@@ -1384,7 +1384,7 @@ Optional Features:
   --enable-FEATURE[=ARG]  include FEATURE [ARG=yes]
   --enable-linux          set linux as the default make target
                           [--disable-linux]
-  --enable-debug-info     build glibc/musl/newlibc/libgcc with debug
+  --enable-debug-info     build gcc/binutils/glibc/musl/newlibc/libgcc with debug
                           information
   --enable-default-pie    build linux toolchain with default PIE
                           [--enable-default-pie]
@@ -3970,7 +3970,7 @@ then :
   debug_info=""
 
 else $as_nop
-  debug_info="-g"
+  debug_info="-g3 -O0 -fvar-tracking-assignments"
 
 fi
 

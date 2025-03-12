@@ -53,7 +53,7 @@ AS_IF([test "x$enable_linux" != xno],
 
 AC_ARG_ENABLE(debug_info,
         [AS_HELP_STRING([--enable-debug-info],
-		[build glibc/musl/newlibc/libgcc with debug information])],
+		[build gcc/binutils/glibc/musl/newlibc/libgcc with debug information])],
         [enable_debug_info=yes],
         [enable_debug_info=no]
         )
@@ -65,7 +65,7 @@ AS_IF([test "x$enable_debug_info" != xyes],
 
 AS_IF([test "x$enable_debug_info" != xyes],
 	[AC_SUBST(debug_info, "")],
-	[AC_SUBST(debug_info, "-g")])
+	[AC_SUBST(debug_info, "-g3 -O0 -fvar-tracking-assignments")])
 
 AC_ARG_ENABLE(default-pie,
         [AS_HELP_STRING([--enable-default-pie],
