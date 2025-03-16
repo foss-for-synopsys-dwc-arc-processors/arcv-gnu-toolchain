@@ -5,6 +5,7 @@ INSTALL_DIR := @prefix@
 GCC_SRCDIR := @with_gcc_src@
 BINUTILS_SRCDIR := @with_binutils_src@
 NEWLIB_SRCDIR := @with_newlib_src@
+PICOLIBC_SRCDIR := @with_picolibc_src@
 GLIBC_SRCDIR := @with_glibc_src@
 MUSL_SRCDIR := @with_musl_src@
 UCLIBC_SRCDIR := @with_uclibc_src@
@@ -167,11 +168,13 @@ PATH := $(builddir)/install-host-gcc/bin:$(PATH)
 GCC_CHECKING_FLAGS := $(GCC_CHECKING_FLAGS) --enable-werror-always
 endif
 newlib: stamps/build-gcc-newlib-stage2
+picolibc: stamps/build-gcc-picolibc-stage2-nano
 linux: stamps/build-gcc-linux-stage2
 musl: stamps/build-gcc-musl-stage2
 uclibc: stamps/build-gcc-uclibc-stage2
 ifeq (@enable_gdb@,--enable-gdb)
 newlib: stamps/build-gdb-newlib
+picolibc: stamps/build-gdb-newlib
 linux: stamps/build-gdb-linux
 musl: stamps/build-gdb-musl
 endif
@@ -343,6 +346,12 @@ ifeq ($(findstring $(srcdir),$(NEWLIB_SRCDIR)),$(srcdir))
 NEWLIB_SRC_GIT := $(NEWLIB_SRCDIR)/.git
 else
 NEWLIB_SRC_GIT :=
+endif
+
+ifeq ($(findstring $(srcdir),$(PICOLIBC_SRCDIR)),$(srcdir))
+PICOLIBC_SRC_GIT := $(PICOLIBC_SRCDIR)/.git
+else
+PICOLIBC_SRC_GIT :=
 endif
 
 ifeq ($(findstring $(srcdir),$(GLIBC_SRCDIR)),$(srcdir))
@@ -850,6 +859,238 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
+
+#
+# Picolibc
+#
+
+PICOLIBC_COMMON_CONFIGURE_OPTIONS := \
+	--cross-file cross-$(NEWLIB_TUPLE).txt \
+	-Dincludedir=include \
+	-Dsystem-libc=true \
+	-Dposix-console=true \
+	-Dlite-exit=true \
+	-Dnewlib-obsolete-math=false \
+	-Dwant-math-errno=true \
+	-Datomic-signal=false \
+	-Dassert-verbose=true \
+	-Ddebug=true \
+	-Dwerror=true
+
+PICOLIBC_PERF_CONFIGURE_OPTIONS := \
+	-Dprefix=$(INSTALL_DIR)/$(NEWLIB_TUPLE) \
+	-Dlibdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
+	-Dspecsdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
+	-Doptimization=3 \
+	-Dio-c99-formats=true \
+	-Dio-long-long=true \
+	-Dio-long-double=true \
+	-Dio-percent-b=true \
+	-Dprintf-percent-n=true \
+	-Dfast-bufio=true \
+	-Dmb-capable=true \
+	-Dio-wchar=true \
+	$(PICOLIBC_COMMON_CONFIGURE_OPTIONS)
+
+PICOLIBC_NANO_CONFIGURE_OPTIONS := \
+	-Dprefix=$(INSTALL_DIR)/picolibc-nano/$(NEWLIB_TUPLE) \
+	-Dlibdir=$(INSTALL_DIR)/picolibc-nano/$(NEWLIB_TUPLE)/lib \
+	-Dspecsdir=none \
+	-Doptimization=s \
+	-Dio-c99-formats=true \
+	-Dio-long-long=false \
+	-Dio-long-double=false \
+	-Dio-percent-b=false \
+	-Dprintf-percent-n=false \
+	-Dfast-bufio=false \
+	-Dmb-capable=false \
+	-Dio-wchar=false \
+	$(PICOLIBC_COMMON_CONFIGURE_OPTIONS)
+
+define PICOLIBC_OBSOLETE_MATH_BLOCK
+#if (__riscv_flen < 64) && !defined(__riscv_zdinx)
+#undef __OBSOLETE_MATH
+#undef __OBSOLETE_MATH_FLOAT
+#undef __OBSOLETE_MATH_DOUBLE
+#define __OBSOLETE_MATH 1
+#endif
+endef
+export PICOLIBC_OBSOLETE_MATH_BLOCK
+
+stamps/build-gcc-picolibc-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binutils-newlib
+	if test -f $</contrib/download_prerequisites && test "@NEED_GCC_EXTERNAL_LIBRARIES@" = "true"; then cd $< && ./contrib/download_prerequisites; fi
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+	cd $(notdir $@) && $</configure \
+		--target=$(NEWLIB_TUPLE) \
+		$(CONFIGURE_HOST) \
+		--prefix=$(INSTALL_DIR) \
+		--disable-shared \
+		--disable-threads \
+		--enable-tls \
+		--enable-languages=c,c++ \
+		@with_system_zlib@ \
+		--with-newlib \
+		--without-headers \
+		--disable-libmudflap \
+		--disable-libssp \
+		--disable-libquadmath \
+		--disable-libgomp \
+		--disable-nls \
+		--disable-tm-clone-registry \
+		--src=$(gccsrcdir) \
+		$(GCC_CHECKING_FLAGS) \
+		$(GCC_MULTILIB_FLAGS) \
+		$(WITH_ABI) \
+		$(WITH_ARCH) \
+		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
+		$(GCC_EXTRA_CONFIGURE_FLAGS) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)" \
+		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
+		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
+	$(MAKE) -C $(notdir $@) all-gcc
+	$(MAKE) -C $(notdir $@) install-gcc
+	mkdir -p $(dir $@) && touch $@
+
+stamps/configure-picolibc-perf: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/build-gcc-picolibc-stage1
+	rm -rf $@ stamps/build-picolibc-perf build-picolibc-perf
+	mkdir build-picolibc-perf
+	cd build-picolibc-perf && $(srcdir)/scripts/generate_picolibc_cross_file \
+		--triplet $(NEWLIB_TUPLE) \
+		--cflags "$(CFLAGS_FOR_TARGET)" \
+		> cross-$(NEWLIB_TUPLE).txt
+	cd build-picolibc-perf && meson setup . $(PICOLIBC_SRCDIR) $(PICOLIBC_PERF_CONFIGURE_OPTIONS)
+	cd build-picolibc-perf && echo "$$PICOLIBC_OBSOLETE_MATH_BLOCK" >> picolibc.h
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-picolibc-perf: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/configure-picolibc-perf
+	ninja -C $(notdir $@)
+	ninja -C $(notdir $@) install
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-gcc-picolibc-stage2: ENABLED_LANGUAGES?="c,c++"
+stamps/build-gcc-picolibc-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-picolibc-perf
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+	cd $(notdir $@) && $</configure \
+		--target=$(NEWLIB_TUPLE) \
+		$(CONFIGURE_HOST) \
+		--prefix=$(INSTALL_DIR) \
+		--disable-shared \
+		--disable-threads \
+		--enable-languages=$(ENABLED_LANGUAGES) \
+		--with-pkgversion="$(GCCPKGVER)" \
+		@with_system_zlib@ \
+		--enable-tls \
+		--with-newlib \
+		--with-headers=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/include \
+		--disable-libmudflap \
+		--disable-libssp \
+		--disable-libquadmath \
+		--disable-libgomp \
+		--disable-nls \
+		--disable-tm-clone-registry \
+		--src=$(gccsrcdir) \
+		$(GCC_CHECKING_FLAGS) \
+		$(GCC_MULTILIB_FLAGS) \
+		$(WITH_ABI) \
+		$(WITH_ARCH) \
+		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
+		$(GCC_EXTRA_CONFIGURE_FLAGS) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)" \
+		CFLAGS_FOR_TARGET="-O3 -g $(CFLAGS_FOR_TARGET)" \
+		CXXFLAGS_FOR_TARGET="-O3 -g $(CXXFLAGS_FOR_TARGET)"
+	$(MAKE) -C $(notdir $@)
+	$(MAKE) -C $(notdir $@) install
+	mkdir -p $(dir $@) && touch $@
+
+stamps/configure-picolibc-nano: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/build-gcc-picolibc-stage2
+	rm -rf $@ stamps/build-picolibc-nano build-picolibc-nano
+	mkdir build-picolibc-nano
+	cd build-picolibc-nano && $(srcdir)/scripts/generate_picolibc_cross_file \
+		--triplet $(NEWLIB_TUPLE) \
+		--cflags "$(CFLAGS_FOR_TARGET) -msave-restore" \
+		> cross-$(NEWLIB_TUPLE).txt
+	cd build-picolibc-nano && meson setup . $(PICOLIBC_SRCDIR) $(PICOLIBC_NANO_CONFIGURE_OPTIONS)
+	cd build-picolibc-nano && echo "$$PICOLIBC_OBSOLETE_MATH_BLOCK" >> picolibc.h
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-picolibc-nano: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/configure-picolibc-nano
+	ninja -C $(notdir $@)
+	ninja -C $(notdir $@) install
+	$(srcdir)/scripts/generate_picolibc_nano_specs \
+		--triplet $(NEWLIB_TUPLE) \
+		--nano-dir-name picolibc-nano \
+		> $(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib/nano.specs
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-gcc-picolibc-stage2-nano: ENABLED_LANGUAGES?="c,c++"
+stamps/build-gcc-picolibc-stage2-nano: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-picolibc-nano
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+	cd $(notdir $@) && $</configure \
+		--target=$(NEWLIB_TUPLE) \
+		$(CONFIGURE_HOST) \
+		--prefix=$(INSTALL_DIR)/picolibc-nano \
+		--disable-shared \
+		--disable-threads \
+		--enable-languages=$(ENABLED_LANGUAGES) \
+		--with-pkgversion="$(GCCPKGVER)" \
+		@with_system_zlib@ \
+		--enable-tls \
+		--with-newlib \
+		--with-headers=$(INSTALL_DIR)/picolibc-nano/$(NEWLIB_TUPLE)/include \
+		--disable-libmudflap \
+		--disable-libssp \
+		--disable-libquadmath \
+		--disable-libgomp \
+		--disable-nls \
+		--disable-tm-clone-registry \
+		--src=$(gccsrcdir) \
+		--enable-target-optspace \
+		$(GCC_CHECKING_FLAGS) \
+		$(GCC_MULTILIB_FLAGS) \
+		$(WITH_ABI) \
+		$(WITH_ARCH) \
+		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
+		$(GCC_EXTRA_CONFIGURE_FLAGS) \
+		CFLAGS_FOR_TARGET="-g $(CFLAGS_FOR_TARGET)" \
+		CXXFLAGS_FOR_TARGET="-g $(CXXFLAGS_FOR_TARGET)"
+	$(MAKE) -C $(notdir $@) all-target-libgcc all-target-libstdc++-v3
+	$(MAKE) -C $(notdir $@) install-target-libgcc install-target-libstdc++-v3
+	mkdir -p $(dir $@) && touch $@
+
+stamps/configure-picolibc-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT)
+	rm -rf $@ stamps/build-picolibc-test build-picolibc-test
+	mkdir build-picolibc-test
+	cd build-picolibc-test && $(srcdir)/scripts/generate_picolibc_cross_file \
+		--triplet $(NEWLIB_TUPLE) \
+		--cflags "$(CFLAGS_FOR_TARGET)" \
+		--simulator "$(SIM)" \
+		> cross-$(NEWLIB_TUPLE).txt
+	cd build-picolibc-test && meson setup . $(PICOLIBC_SRCDIR) \
+		--cross-file cross-$(NEWLIB_TUPLE).txt \
+		-Dprefix=$(INSTALL_DIR)/$(NEWLIB_TUPLE) \
+		-Dlibdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
+		-Dspecsdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
+		-Dincludedir=include \
+		-Doptimization=3 \
+		-Dtests=true \
+		$(PICOLIBC_RELEASE_CONFIGURE_OPTIONS)
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-picolibc-test: stamps/configure-picolibc-test
+	ninja -C $(notdir $@)
+	mkdir -p $(dir $@) && touch $@
+
+stamps/check-libc-picolibc: stamps/build-picolibc-test $(SIM_STAMP)
+	ninja -C build-picolibc-test test
+	date > $@
 
 #
 # MUSL

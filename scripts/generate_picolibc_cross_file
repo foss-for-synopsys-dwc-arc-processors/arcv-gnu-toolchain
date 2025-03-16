@@ -1,0 +1,120 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+
+DEFAULT_TRIPLET = "riscv64-unknown-elf"
+DEFAULT_CFLAGS = "-O2"
+DEFAULT_FLASH_ADDR = "0x80000000"
+DEFAULT_FLASH_SIZE = "0x00200000"
+DEFAULT_RAM_ADDR = "0x80200000"
+DEFAULT_RAM_SIZE = "0x00200000"
+
+
+def parse_options(argv):
+    parser = argparse.ArgumentParser(
+        description="This tool generates a cross toolchain file for Meson build system for "
+        "Picolibc standard library."
+    )
+    parser.add_argument(
+        "--triplet",
+        type=str,
+        default=DEFAULT_TRIPLET,
+        help="A target triplet, default: {}".format(DEFAULT_TRIPLET),
+    )
+    parser.add_argument(
+        "--cflags",
+        type=str,
+        default=DEFAULT_CFLAGS,
+        help="CFLAGS for libraries and tests, default: {}".format(DEFAULT_CFLAGS),
+    )
+    parser.add_argument(
+        "--simulator",
+        type=str,
+        choices=("qemu", "nsim"),
+        default="qemu",
+        help="A simulator for testing, default: qemu",
+    )
+    parser.add_argument("--flash-addr", type=str, default=DEFAULT_FLASH_ADDR)
+    parser.add_argument("--flash-size", type=str, default=DEFAULT_FLASH_SIZE)
+    parser.add_argument("--ram-addr", type=str, default=DEFAULT_RAM_ADDR)
+    parser.add_argument("--ram-size", type=str, default=DEFAULT_RAM_SIZE)
+    return parser.parse_args()
+
+
+def main(argv):
+    options = parse_options(argv)
+    triplet = options.triplet
+
+    if not triplet:
+        print("The --triplet cannot be empty or null.", file=sys.stderr)
+        return 1
+
+    if len(triplet.split("-")) < 3:
+        print(
+            'The --triplet must contain at least 3 words separated by "-".',
+            file=sys.stderr,
+        )
+        return 1
+
+    family, vendor = triplet.split("-")[:2]
+
+    # Generate [binaries] section
+    content = "[binaries]\n"
+    content += "c = '{}-gcc'\n".format(options.triplet)
+    content += "cpp = '{}-g++'\n".format(options.triplet)
+    content += "ar = '{}-ar'\n".format(options.triplet)
+    content += "as = '{}-as'\n".format(options.triplet)
+    content += "strip = '{}-strip'\n".format(options.triplet)
+    content += "nm = '{}-nm'\n".format(options.triplet)
+
+    if options.simulator == "qemu":
+        content += (
+            r"""exe_wrapper = ['sh', '-c', 'test -z "$PICOLIBC_TEST" || run-riscv "$@"', 'run-riscv']"""
+            + "\n"
+        )
+    else:
+        print("This simulator is not supported yet: {}.".format(options.simulator), file=sys.stderr)
+        return 1
+
+    # Generate [host_machine] section
+    content += "\n[host_machine]\n"
+    content += "system = '{}'\n".format(vendor)
+    content += "cpu_family = '{}'\n".format(family)
+    content += "cpu = 'riscv'\n"
+    content += "endian = 'little'\n"
+
+    # Generate [built-in options] section
+    content += "\n[built-in options]\n"
+    c_args = [
+        "-nostdlib",
+        "-ffunction-sections",
+        "-fdata-sections",
+        "-fno-common",
+        "-ftls-model=local-exec",
+    ]
+
+    if options.cflags:
+        c_args.extend(options.cflags.split())
+
+    content += "c_args = {}\n".format(repr(c_args))
+    content += "cpp_args = {}\n".format(repr(c_args))
+    content += "c_link_args = []\n"
+    content += "cpp_link_args = []\n"
+
+    # Generate [properties] section
+    content += "\n[properties]\n"
+    content += "needs_exe_wrapper = true\n"
+    content += "skip_sanity_check = true\n"
+    content += "default_flash_addr = '{}'\n".format(options.flash_addr)
+    content += "default_flash_size = '{}'\n".format(options.flash_size)
+    content += "default_ram_addr = '{}'\n".format(options.ram_addr)
+    content += "default_ram_size = '{}'\n".format(options.ram_size)
+
+    print(content)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))

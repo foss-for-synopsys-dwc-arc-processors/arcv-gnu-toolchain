@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+
+import argparse
+import sys
+
+DEFAULT_TRIPLET = "riscv64-unknown-elf"
+DEFAULT_NANO_DIR_NAME = "picolibc-nano"
+
+
+def parse_options(argv):
+    parser = argparse.ArgumentParser(
+        description="This tool generates nano.specs file for Meson build system for "
+        "Picolibc standard library."
+    )
+    parser.add_argument(
+        "--triplet",
+        type=str,
+        default=DEFAULT_TRIPLET,
+        help="A target triplet, default: {}".format(DEFAULT_TRIPLET),
+    )
+    parser.add_argument(
+        "--nano-dir-name",
+        type=str,
+        default=DEFAULT_NANO_DIR_NAME,
+        help="A name of Picolibc installation directory for nano configuration, default: {}".format(
+            DEFAULT_NANO_DIR_NAME
+        ),
+    )
+    return parser.parse_args()
+
+
+def main(argv):
+    options = parse_options(argv)
+    triplet = options.triplet
+    dirname = options.nano_dir_name
+
+    if not triplet:
+        print("The --triplet cannot be empty or null.", file=sys.stderr)
+        return 1
+
+    if not dirname:
+        print("The --nano-dir-name cannot be empty or null.", file=sys.stderr)
+        return 1
+
+    content  = "%rename link    picolibc_nano_link\n"
+    content += "%rename cpp     picolibc_nano_cpp\n"
+    content += "%rename cc1plus picolibc_nano_cc1plus\n\n"
+    content += "*cpp:\n"
+    content += "-isystem %:getenv(GCC_EXEC_PREFIX ../../{}/{}/include) %(picolibc_nano_cpp)\n\n".format(dirname, triplet)
+    content += "*cc1plus:\n"
+    content += "-idirafter %:getenv(GCC_EXEC_PREFIX ../../{}/{}/include) %(picolibc_nano_cc1plus)\n\n".format(dirname, triplet)
+    content += "*link:\n"
+    content += "-L%:getenv(GCC_EXEC_PREFIX ../../{0}/{1}/lib/%M) -L%:getenv(GCC_EXEC_PREFIX ../../{0}/{1}/lib) %(picolibc_nano_link)\n".format(dirname, triplet)
+
+    print(content)
+
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main(sys.argv))
