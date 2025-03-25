@@ -82,9 +82,13 @@ GCC_CHECKING_FLAGS := @gcc_checking@
 
 EXTRA_MULTILIB_TEST := @extra_multilib_test@
 
+ifeq (@triplet_xlen@,default)
 XLEN := $(shell echo $(WITH_ARCH) | tr A-Z a-z | sed 's/.*rv\([0-9]*\).*/\1/')
 ifneq ($(XLEN),32)
 	XLEN := 64
+endif
+else
+XLEN := @triplet_xlen@
 endif
 
 make_tuple = riscv$(1)-@vendor@-$(2)
