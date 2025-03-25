@@ -655,6 +655,7 @@ WITH_ISA_SPEC
 WITH_TUNE
 WITH_ABI
 WITH_ARCH
+triplet_xlen
 vendor_alias
 vendor
 enable_default_pie
@@ -727,6 +728,7 @@ enable_host_debug_info
 enable_default_pie
 with_vendor
 with_vendor_alias
+with_triplet_xlen
 with_arch
 with_abi
 with_tune
@@ -1419,6 +1421,8 @@ Optional Packages:
   --with-vendor=unknown   Sets the vendor part of the triplet
   --with-vendor-alias=unknown
                           Sets the vendor part of the triplet alias
+  --with-triplet-xlen=default
+                          Sets the XLEN part of the triplet
   --with-arch=rv64gc      Sets the base RISC-V ISA, defaults to rv64gc
   --with-abi=lp64d        Sets the base RISC-V ABI, defaults to lp64d
   --with-tune=rocket      Set the base RISC-V CPU, defaults to rocket
@@ -4076,6 +4080,17 @@ fi
 
 
 
+# Check whether --with-triplet_xlen was given.
+if test ${with_triplet_xlen+y}
+then :
+  withval=$with_triplet_xlen;
+else $as_nop
+  with_triplet_xlen=default
+
+fi
+
+
+
 # Check whether --with-arch was given.
 if test ${with_arch+y}
 then :
@@ -4165,6 +4180,8 @@ fi
 vendor=$with_vendor
 
 vendor_alias=$with_vendor_alias
+
+triplet_xlen=$with_triplet_xlen
 
 WITH_ARCH=--with-arch=$with_arch
 
