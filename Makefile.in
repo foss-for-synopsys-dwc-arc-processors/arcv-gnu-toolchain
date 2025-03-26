@@ -16,6 +16,7 @@ PK_SRCDIR := @with_pk_src@
 LLVM_SRCDIR := @with_llvm_src@
 DEJAGNU_SRCDIR := @with_dejagnu_src@
 DEBUG_INFO := @debug_info@
+HOST_DEBUG_INFO := @host_debug_info@
 ENABLE_DEFAULT_PIE := @enable_default_pie@
 DEJAGNU_SRCDIR := @with_dejagnu_src@
 
@@ -112,6 +113,8 @@ else
 CMODEL_FOR_TARGET := @cmodel@
 endif
 
+CFLAGS_FOR_HOST := $(CFLAGS_FOR_HOST_EXTRA) $(HOST_DEBUG_INFO) @host_cflags@
+CXXFLAGS_FOR_HOST := $(CXXFLAGS_FOR_HOST_EXTRA) $(HOST_DEBUG_INFO) @host_cxxflags@
 CFLAGS_FOR_TARGET := $(CFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @target_cflags@ $(CMODEL_FOR_TARGET)
 CXXFLAGS_FOR_TARGET := $(CXXFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) @target_cxxflags@ $(CMODEL_FOR_TARGET)
 ASFLAGS_FOR_TARGET := $(ASFLAGS_FOR_TARGET_EXTRA) $(DEBUG_INFO) $(CMODEL_FOR_TARGET)
@@ -665,7 +668,9 @@ stamps/build-binutils-newlib: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) $(PREPARATI
 		--disable-sim \
 		--disable-libdecnumber \
 		--disable-readline \
-		$(WITH_ISA_SPEC)
+		$(WITH_ISA_SPEC) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)"
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -686,7 +691,9 @@ stamps/build-gdb-newlib: $(GDB_SRCDIR) $(GDB_SRC_GIT) $(PREPARATION_STAMP)
 		--disable-binutils \
 		--disable-ld \
 		--disable-gold \
-		--disable-gprof
+		--disable-gprof \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)"
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@) && touch $@
@@ -720,6 +727,8 @@ stamps/build-gcc-newlib-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binuti
 		$(WITH_TUNE) \
 		$(WITH_ISA_SPEC) \
 		$(GCC_EXTRA_CONFIGURE_FLAGS) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)" \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@) all-gcc
@@ -834,6 +843,8 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 		$(WITH_TUNE) \
 		$(WITH_ISA_SPEC) \
 		$(GCC_EXTRA_CONFIGURE_FLAGS) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)" \
 		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
 		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@)

@@ -67,6 +67,22 @@ AS_IF([test "x$enable_debug_info" != xyes],
 	[AC_SUBST(debug_info, "")],
 	[AC_SUBST(debug_info, "-g")])
 
+AC_ARG_ENABLE(host_debug_info,
+        [AS_HELP_STRING([--enable-host-debug-info],
+		[build host Binutils, GDB and GCC with debug information])],
+        [enable_host_debug_info=yes],
+        [enable_host_debug_info=no]
+        )
+
+AS_IF([test "x$enable_host_debug_info" != xyes],
+        [disable_host_debug_info=yes],
+        [disable_host_debug_info=no]
+        )
+
+AS_IF([test "x$enable_host_debug_info" != xyes],
+	[AC_SUBST(host_debug_info, "")],
+	[AC_SUBST(host_debug_info, "-g")])
+
 AC_ARG_ENABLE(default-pie,
         [AS_HELP_STRING([--enable-default-pie],
 		[build linux toolchain with default PIE @<:@--enable-default-pie@:>@])],
@@ -241,6 +257,21 @@ AC_ARG_WITH(target_cxxflags,
 	[]
 	)
 AC_SUBST(target_cxxflags, $with_target_cxxflags)
+
+AC_ARG_WITH(host_cflags,
+	[AS_HELP_STRING([--with-host-cflags],
+		[Add extra flags for C for host Binutils, GDB and GCC])],
+	[],
+	[]
+	)
+AC_SUBST(host_cflags, $with_host_cflags)
+AC_ARG_WITH(host_cxxflags,
+	[AS_HELP_STRING([--with-host-cxxflags],
+		[Add extra flags for C++ for host Binutils, GDB and GCC])],
+	[],
+	[]
+	)
+AC_SUBST(host_cxxflags, $with_host_cxxflags)
 
 AC_CONFIG_FILES([Makefile])
 AC_CONFIG_FILES([scripts/wrapper/awk/awk], [chmod +x scripts/wrapper/awk/awk])

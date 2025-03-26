@@ -636,6 +636,8 @@ enable_gdb
 with_guile
 with_system_zlib
 configure_host
+host_cxxflags
+host_cflags
 target_cxxflags
 target_cflags
 cmodel
@@ -656,6 +658,7 @@ triplet_xlen
 vendor_alias
 vendor
 enable_default_pie
+host_debug_info
 debug_info
 default_target
 FETCHER
@@ -719,6 +722,7 @@ ac_user_opts='
 enable_option_checking
 enable_linux
 enable_debug_info
+enable_host_debug_info
 enable_default_pie
 with_vendor
 with_vendor_alias
@@ -736,6 +740,8 @@ enable_gcc_checking
 with_cmodel
 with_target_cflags
 with_target_cxxflags
+with_host_cflags
+with_host_cxxflags
 with_host
 with_system_zlib
 with_guile
@@ -1388,6 +1394,9 @@ Optional Features:
                           [--disable-linux]
   --enable-debug-info     build glibc/musl/newlibc/libgcc with debug
                           information
+  --enable-host-debug-info
+                          build host Binutils, GDB and GCC with debug
+                          information
   --enable-default-pie    build linux toolchain with default PIE
                           [--enable-default-pie]
   --enable-multilib       build both RV32 and RV64 runtime libraries
@@ -1435,6 +1444,9 @@ Optional Packages:
                           libgcc [--with-cmodel=medlow]
   --with-target-cflags    Add extra target flags for C for library code
   --with-target-cxxflags  Add extra target flags for C++ for library code
+  --with-host-cflags      Add extra flags for C for host Binutils, GDB and GCC
+  --with-host-cxxflags    Add extra flags for C++ for host Binutils, GDB and
+                          GCC
   --with-host=x86_64-w64-mingw32
                           Sets the host for the tools, you probably want
                           nothing
@@ -3978,6 +3990,33 @@ else $as_nop
 
 fi
 
+# Check whether --enable-host_debug_info was given.
+if test ${enable_host_debug_info+y}
+then :
+  enableval=$enable_host_debug_info; enable_host_debug_info=yes
+else $as_nop
+  enable_host_debug_info=no
+
+fi
+
+
+if test "x$enable_host_debug_info" != xyes
+then :
+  disable_host_debug_info=yes
+else $as_nop
+  disable_host_debug_info=no
+
+fi
+
+if test "x$enable_host_debug_info" != xyes
+then :
+  host_debug_info=""
+
+else $as_nop
+  host_debug_info="-g"
+
+fi
+
 # Check whether --enable-default-pie was given.
 if test ${enable_default_pie+y}
 then :
@@ -4270,6 +4309,25 @@ then :
 fi
 
 target_cxxflags=$with_target_cxxflags
+
+
+
+# Check whether --with-host_cflags was given.
+if test ${with_host_cflags+y}
+then :
+  withval=$with_host_cflags;
+fi
+
+host_cflags=$with_host_cflags
+
+
+# Check whether --with-host_cxxflags was given.
+if test ${with_host_cxxflags+y}
+then :
+  withval=$with_host_cxxflags;
+fi
+
+host_cxxflags=$with_host_cxxflags
 
 
 ac_config_files="$ac_config_files Makefile"
