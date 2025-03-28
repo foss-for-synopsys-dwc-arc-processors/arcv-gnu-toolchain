@@ -5,7 +5,7 @@
 [submodule "gcc"]
 	path = gcc
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/gcc
-	branch = arc-2025.06
+	branch = ykolerov/multilib-maximum
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
