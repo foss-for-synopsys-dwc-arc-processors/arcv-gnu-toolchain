@@ -1059,8 +1059,8 @@ stamps/build-gcc-picolibc-stage2-nano: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build
 		$(WITH_TUNE) \
 		$(WITH_ISA_SPEC) \
 		$(GCC_EXTRA_CONFIGURE_FLAGS) \
-		CFLAGS_FOR_TARGET="-g $(CFLAGS_FOR_TARGET)" \
-		CXXFLAGS_FOR_TARGET="-g $(CXXFLAGS_FOR_TARGET)"
+		CFLAGS_FOR_TARGET="-Os -g $(CFLAGS_FOR_TARGET)" \
+		CXXFLAGS_FOR_TARGET="-Os -g $(CXXFLAGS_FOR_TARGET)"
 	$(MAKE) -C $(notdir $@) all-target-libgcc all-target-libstdc++-v3
 	$(MAKE) -C $(notdir $@) install-target-libgcc install-target-libstdc++-v3
 	mkdir -p $(dir $@) && touch $@
