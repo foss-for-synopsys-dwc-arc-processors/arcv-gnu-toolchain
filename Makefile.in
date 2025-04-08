@@ -174,7 +174,7 @@ musl: stamps/build-gcc-musl-stage2
 uclibc: stamps/build-gcc-uclibc-stage2
 ifeq (@enable_gdb@,--enable-gdb)
 newlib: stamps/build-gdb-newlib
-picolibc: stamps/build-gdb-newlib
+picolibc: stamps/build-gdb-picolibc
 linux: stamps/build-gdb-linux
 musl: stamps/build-gdb-musl
 endif
@@ -867,6 +867,89 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 # Picolibc
 #
 
+stamps/build-binutils-picolibc: $(BINUTILS_SRCDIR) $(BINUTILS_SRC_GIT) $(PREPARATION_STAMP)
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+# CC_FOR_TARGET is required for the ld testsuite.
+	cd $(notdir $@) && CC_FOR_TARGET=$(NEWLIB_CC_FOR_TARGET) $</configure \
+		--target=$(NEWLIB_TUPLE) \
+		$(CONFIGURE_HOST) \
+		--prefix=$(INSTALL_DIR) \
+		--enable-plugins \
+		@with_guile@ \
+		--disable-werror \
+		$(BINUTILS_TARGET_FLAGS) \
+		--disable-gdb \
+		--disable-sim \
+		--disable-libdecnumber \
+		--disable-readline \
+		$(WITH_ISA_SPEC) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)"
+	$(MAKE) -C $(notdir $@)
+	$(MAKE) -C $(notdir $@) install
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-gdb-picolibc: $(GDB_SRCDIR) $(GDB_SRC_GIT) $(PREPARATION_STAMP)
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+# CC_FOR_TARGET is required for the ld testsuite.
+	cd $(notdir $@) && CC_FOR_TARGET=$(NEWLIB_CC_FOR_TARGET) $</configure \
+		--target=$(NEWLIB_TUPLE) \
+		$(CONFIGURE_HOST) \
+		--prefix=$(INSTALL_DIR) \
+		@with_guile@ \
+		--disable-werror \
+		$(GDB_TARGET_FLAGS) \
+		--enable-gdb \
+		--disable-gas \
+		--disable-binutils \
+		--disable-ld \
+		--disable-gold \
+		--disable-gprof \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)"
+	$(MAKE) -C $(notdir $@)
+	$(MAKE) -C $(notdir $@) install
+	mkdir -p $(dir $@) && touch $@
+
+stamps/build-gcc-picolibc-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binutils-picolibc
+	if test -f $</contrib/download_prerequisites && test "@NEED_GCC_EXTERNAL_LIBRARIES@" = "true"; then cd $< && ./contrib/download_prerequisites; fi
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+	cd $(notdir $@) && $</configure \
+		--target=$(NEWLIB_TUPLE) \
+		$(CONFIGURE_HOST) \
+		--prefix=$(INSTALL_DIR) \
+		--disable-shared \
+		--disable-threads \
+		--enable-tls \
+		--enable-languages=c,c++ \
+		@with_system_zlib@ \
+		--with-newlib \
+		--without-headers \
+		--disable-libmudflap \
+		--disable-libssp \
+		--disable-libquadmath \
+		--disable-libgomp \
+		--disable-nls \
+		--disable-tm-clone-registry \
+		--src=$(gccsrcdir) \
+		$(GCC_CHECKING_FLAGS) \
+		$(GCC_MULTILIB_FLAGS) \
+		$(WITH_ABI) \
+		$(WITH_ARCH) \
+		$(WITH_TUNE) \
+		$(WITH_ISA_SPEC) \
+		$(GCC_EXTRA_CONFIGURE_FLAGS) \
+		CFLAGS="$(CFLAGS_FOR_HOST)" \
+		CXXFLAGS="$(CXXFLAGS_FOR_HOST)" \
+		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
+		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
+	$(MAKE) -C $(notdir $@) all-gcc
+	$(MAKE) -C $(notdir $@) install-gcc
+	mkdir -p $(dir $@) && touch $@
+
 PICOLIBC_COMMON_CONFIGURE_OPTIONS := \
 	--cross-file cross-$(NEWLIB_TUPLE).txt \
 	-Dincludedir=include \
@@ -913,43 +996,6 @@ define PICOLIBC_OBSOLETE_MATH_BLOCK
 #endif
 endef
 export PICOLIBC_OBSOLETE_MATH_BLOCK
-
-stamps/build-gcc-picolibc-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binutils-newlib
-	if test -f $</contrib/download_prerequisites && test "@NEED_GCC_EXTERNAL_LIBRARIES@" = "true"; then cd $< && ./contrib/download_prerequisites; fi
-	rm -rf $@ $(notdir $@)
-	mkdir $(notdir $@)
-	cd $(notdir $@) && $</configure \
-		--target=$(NEWLIB_TUPLE) \
-		$(CONFIGURE_HOST) \
-		--prefix=$(INSTALL_DIR) \
-		--disable-shared \
-		--disable-threads \
-		--enable-tls \
-		--enable-languages=c,c++ \
-		@with_system_zlib@ \
-		--with-newlib \
-		--without-headers \
-		--disable-libmudflap \
-		--disable-libssp \
-		--disable-libquadmath \
-		--disable-libgomp \
-		--disable-nls \
-		--disable-tm-clone-registry \
-		--src=$(gccsrcdir) \
-		$(GCC_CHECKING_FLAGS) \
-		$(GCC_MULTILIB_FLAGS) \
-		$(WITH_ABI) \
-		$(WITH_ARCH) \
-		$(WITH_TUNE) \
-		$(WITH_ISA_SPEC) \
-		$(GCC_EXTRA_CONFIGURE_FLAGS) \
-		CFLAGS="$(CFLAGS_FOR_HOST)" \
-		CXXFLAGS="$(CXXFLAGS_FOR_HOST)" \
-		CFLAGS_FOR_TARGET="-Os $(CFLAGS_FOR_TARGET)" \
-		CXXFLAGS_FOR_TARGET="-Os $(CXXFLAGS_FOR_TARGET)"
-	$(MAKE) -C $(notdir $@) all-gcc
-	$(MAKE) -C $(notdir $@) install-gcc
-	mkdir -p $(dir $@) && touch $@
 
 stamps/configure-picolibc-perf: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/build-gcc-picolibc-stage1
 	rm -rf $@ stamps/build-picolibc-perf build-picolibc-perf
@@ -1084,6 +1130,7 @@ stamps/configure-picolibc-perf-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC
 		-Dspecsdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
 		-Dtests=true \
 		$(PICOLIBC_PERF_CONFIGURE_OPTIONS)
+	cd build-picolibc-perf-test && echo "$$PICOLIBC_OBSOLETE_MATH_BLOCK" >> picolibc.h
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-picolibc-perf-test: stamps/configure-picolibc-perf-test
@@ -1108,6 +1155,7 @@ stamps/configure-picolibc-nano-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC
 		-Dspecsdir=none \
 		-Dtests=true \
 		$(PICOLIBC_NANO_CONFIGURE_OPTIONS)
+	cd build-picolibc-nano-test && echo "$$PICOLIBC_OBSOLETE_MATH_BLOCK" >> picolibc.h
 	mkdir -p $(dir $@) && touch $@
 
 stamps/build-picolibc-nano-test: stamps/configure-picolibc-nano-test
