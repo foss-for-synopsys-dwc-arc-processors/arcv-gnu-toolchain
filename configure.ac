@@ -137,10 +137,10 @@ AC_ARG_WITH(abi,
 	)
 
 AC_ARG_WITH(tune,
-	[AS_HELP_STRING([--with-tune=rocket],
+	[AS_HELP_STRING([--with-tune=default],
 		[Set the base RISC-V CPU, defaults to rocket])],
 	[],
-	[with_tune=rocket]
+	[with_tune=default]
 	)
 
 AC_ARG_WITH(isa-spec,
