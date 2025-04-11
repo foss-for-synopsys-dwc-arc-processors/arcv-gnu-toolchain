@@ -2,10 +2,12 @@
 	path = binutils
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
 	branch = arc-2025.06
+	shallow = true
 [submodule "gcc"]
 	path = gcc
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/gcc
-	branch = ykolerov/multilib-maximum
+	branch = arc-2025.06
+	shallow = true
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
@@ -14,14 +16,17 @@
 	path = dejagnu
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/dejagnu
 	branch = arc-2025.06
+	shallow = true
 [submodule "newlib"]
 	path = newlib
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/newlib
 	branch = arc-2025.06
+	shallow = true
 [submodule "gdb"]
 	path = gdb
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
 	branch = arc-2025.06-gdb
+	shallow = true
 [submodule "qemu"]
 	path = qemu
 	url = https://gitlab.com/qemu-project/qemu.git
@@ -54,3 +59,4 @@
 	path = picolibc
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/picolibc
 	branch = arc-2025.06
+	shallow = true
