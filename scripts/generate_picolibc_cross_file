@@ -73,6 +73,11 @@ def main(argv):
             r"""exe_wrapper = ['sh', '-c', 'test -z "$PICOLIBC_TEST" || run-riscv "$@"', 'run-riscv']"""
             + "\n"
         )
+    elif options.simulator == "nsim":
+        content += (
+            r"""exe_wrapper = ['sh', '-c', 'test -z "$PICOLIBC_TEST" || run-riscv-nsim "$@"', 'run-riscv-nsim']"""
+            + "\n"
+        )
     else:
         print("This simulator is not supported yet: {}.".format(options.simulator), file=sys.stderr)
         return 1
