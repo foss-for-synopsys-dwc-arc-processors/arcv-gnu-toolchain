@@ -991,12 +991,40 @@ define PICOLIBC_OBSOLETE_MATH_BLOCK
 endef
 export PICOLIBC_OBSOLETE_MATH_BLOCK
 
+PICOLIBC_RELEASE_LAYOUT_SETTINGS := \
+	--flash-addr "0x00000000" \
+	--flash-size "128K" \
+	--ram-addr "0x40000000" \
+	--ram-size "128K"
+
+PICOLIBC_NSIM_LAYOUT_SETTINGS := \
+	--flash-addr "0x00000000" \
+	--flash-size "4M" \
+	--ram-addr "0x40000000" \
+	--ram-size "4M"
+
+PICOLIBC_QEMU_LAYOUT_SETTINGS := \
+	--flash-addr "0x80000000" \
+	--flash-size "4M" \
+	--ram-addr "0x80020000" \
+	--ram-size "4M"
+
+ifeq ($(SIM),nsim)
+PICOLIBC_TEST_LAYOUT_SETTINGS := $(PICOLIBC_NSIM_LAYOUT_SETTINGS)
+endif
+
+ifeq ($(SIM),qemu)
+PICOLIBC_TEST_LAYOUT_SETTINGS := $(PICOLIBC_QEMU_LAYOUT_SETTINGS)
+endif
+
 stamps/configure-picolibc-perf: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/build-gcc-picolibc-stage1
 	rm -rf $@ stamps/build-picolibc-perf build-picolibc-perf
 	mkdir build-picolibc-perf
 	cd build-picolibc-perf && $(srcdir)/scripts/generate_picolibc_cross_file \
 		--triplet $(NEWLIB_TUPLE) \
+		$(PICOLIBC_RELEASE_LAYOUT_SETTINGS) \
 		--cflags "$(CFLAGS_FOR_TARGET)" \
+		--simulator nsim \
 		> cross-$(NEWLIB_TUPLE).txt
 	cd build-picolibc-perf && meson setup . $(PICOLIBC_SRCDIR) \
 		-Dprefix=$(INSTALL_DIR)/$(NEWLIB_TUPLE) \
@@ -1054,7 +1082,9 @@ stamps/configure-picolibc-nano: $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT) stamps/bu
 	mkdir build-picolibc-nano
 	cd build-picolibc-nano && $(srcdir)/scripts/generate_picolibc_cross_file \
 		--triplet $(NEWLIB_TUPLE) \
+		$(PICOLIBC_RELEASE_LAYOUT_SETTINGS) \
 		--cflags "$(CFLAGS_FOR_TARGET) -msave-restore" \
+		--simulator nsim \
 		> cross-$(NEWLIB_TUPLE).txt
 	cd build-picolibc-nano && meson setup . $(PICOLIBC_SRCDIR) \
 		-Dprefix=$(INSTALL_DIR)/picolibc-nano/$(NEWLIB_TUPLE) \
@@ -1115,6 +1145,7 @@ stamps/configure-picolibc-perf-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC
 	mkdir build-picolibc-perf-test
 	cd build-picolibc-perf-test && $(srcdir)/scripts/generate_picolibc_cross_file \
 		--triplet $(NEWLIB_TUPLE) \
+		$(PICOLIBC_TEST_LAYOUT_SETTINGS) \
 		--cflags "$(CFLAGS_FOR_TARGET)" \
 		--simulator "$(SIM)" \
 		> cross-$(NEWLIB_TUPLE).txt
@@ -1140,6 +1171,7 @@ stamps/configure-picolibc-nano-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC
 	mkdir build-picolibc-nano-test
 	cd build-picolibc-nano-test && $(srcdir)/scripts/generate_picolibc_cross_file \
 		--triplet $(NEWLIB_TUPLE) \
+		$(PICOLIBC_TEST_LAYOUT_SETTINGS) \
 		--cflags "$(CFLAGS_FOR_TARGET)" \
 		--simulator "$(SIM)" \
 		> cross-$(NEWLIB_TUPLE).txt
