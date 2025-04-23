@@ -1154,6 +1154,7 @@ stamps/configure-picolibc-perf-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC
 		-Dlibdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
 		-Dspecsdir=$(INSTALL_DIR)/$(NEWLIB_TUPLE)/lib \
 		-Dtests=true \
+		-Dtest-machine=$(SIM) \
 		$(PICOLIBC_PERF_CONFIGURE_OPTIONS)
 	cd build-picolibc-perf-test && echo "$$PICOLIBC_OBSOLETE_MATH_BLOCK" >> picolibc.h
 	mkdir -p $(dir $@) && touch $@
@@ -1180,6 +1181,7 @@ stamps/configure-picolibc-nano-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC
 		-Dlibdir=$(INSTALL_DIR)/picolibc-nano/$(NEWLIB_TUPLE)/lib \
 		-Dspecsdir=none \
 		-Dtests=true \
+		-Dtest-machine=$(SIM) \
 		$(PICOLIBC_NANO_CONFIGURE_OPTIONS)
 	cd build-picolibc-nano-test && echo "$$PICOLIBC_OBSOLETE_MATH_BLOCK" >> picolibc.h
 	mkdir -p $(dir $@) && touch $@
