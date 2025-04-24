@@ -1164,7 +1164,7 @@ stamps/build-picolibc-perf-test: stamps/configure-picolibc-perf-test
 	mkdir -p $(dir $@) && touch $@
 
 stamps/check-libc-picolibc-perf: stamps/build-picolibc-perf-test $(SIM_STAMP)
-	ninja -C build-picolibc-perf-test test || true
+	meson test -C build-picolibc-perf-test || true
 	date > $@
 
 stamps/configure-picolibc-nano-test: stamps/build-gcc-picolibc-stage2 $(PICOLIBC_SRCDIR) $(PICOLIBC_SRC_GIT)
@@ -1191,7 +1191,7 @@ stamps/build-picolibc-nano-test: stamps/configure-picolibc-nano-test
 	mkdir -p $(dir $@) && touch $@
 
 stamps/check-libc-picolibc-nano: stamps/build-picolibc-nano-test $(SIM_STAMP)
-	ninja -C build-picolibc-nano-test test || true
+	meson test -C build-picolibc-nano-test || true
 	date > $@
 
 #
