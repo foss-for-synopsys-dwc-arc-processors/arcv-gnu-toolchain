@@ -1,11 +1,11 @@
 [submodule "binutils"]
 	path = binutils
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
-	branch = arc-2025.09
+	branch = arc-2026.03
 [submodule "gcc"]
 	path = gcc
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/gcc
-	branch = arc-2025.09
+	branch = arc-2026.03
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
@@ -13,15 +13,15 @@
 [submodule "dejagnu"]
 	path = dejagnu
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/dejagnu
-	branch = arc-2025.09
+	branch = arc-2026.03
 [submodule "newlib"]
 	path = newlib
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/newlib
-	branch = arc-2025.09
+	branch = arc-2026.03
 [submodule "gdb"]
 	path = gdb
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/binutils-gdb
-	branch = arc-2025.09-gdb
+	branch = arc-2026.03
 [submodule "qemu"]
 	path = qemu
 	url = https://gitlab.com/qemu-project/qemu.git
@@ -53,4 +53,4 @@
 [submodule "picolibc"]
 	path = picolibc
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/picolibc
-	branch = arc-2025.09
+	branch = arc-2026.03
