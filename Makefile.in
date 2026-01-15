@@ -210,6 +210,8 @@ check-gcc: check-gcc-@default_target@
 check-gcc-linux: stamps/check-gcc-linux
 check-gcc-newlib: stamps/check-gcc-newlib
 check-gcc-newlib-nano: stamps/check-gcc-newlib-nano
+check-gcc-picolibc: stamps/check-gcc-picolibc
+check-gcc-picolibc-nano: stamps/check-gcc-picolibc-nano
 .PHONY: check-libc-newlib check-libc-newlib-nano
 check-libc-newlib: stamps/check-libc-newlib
 check-libc-newlib-nano: stamps/check-libc-newlib-nano
@@ -225,11 +227,15 @@ check-binutils: check-binutils-@default_target@
 check-binutils-linux: stamps/check-binutils-linux
 check-binutils-newlib: stamps/check-binutils-newlib
 check-binutils-newlib-nano: stamps/check-binutils-newlib-nano
+check-binutils-picolibc: stamps/check-binutils-picolibc
+check-binutils-picolibc-nano: stamps/check-binutils-picolibc-nano
 .PHONY: check-gdb check-gdb-linux check-gdb-newlib
 check-gdb: check-gdb-@default_target@
 check-gdb-linux: stamps/check-gdb-linux
 check-gdb-newlib: stamps/check-gdb-newlib
 check-gdb-newlib-nano: stamps/check-gdb-newlib-nano
+check-gdb-picolibc: stamps/check-gdb-picolibc
+check-gdb-picolibc-nano: stamps/check-gdb-picolibc-nano
 
 .PHONY: report
 report: report-@default_target@
@@ -237,6 +243,8 @@ report: report-@default_target@
 report-linux: $(patsubst %,report-%-linux,$(REGRESSION_TEST_LIST))
 report-newlib: $(patsubst %,report-%-newlib,$(REGRESSION_TEST_LIST))
 report-newlib-nano: $(patsubst %,report-%-newlib-nano,$(REGRESSION_TEST_LIST))
+report-picolibc: $(patsubst %,report-%-picolibc,$(REGRESSION_TEST_LIST))
+report-picolibc-nano: $(patsubst %,report-%-picolibc-nano,$(REGRESSION_TEST_LIST))
 .PHONY: report-gcc
 report-gcc: report-gcc-@default_target@
 .PHONY: report-dhrystone
@@ -248,23 +256,31 @@ report-gdb: report-gdb-@default_target@
 
 .PHONY: build-sim
 ifeq ($(SIM), nsim)
-# Using nsim simulator.
-ifeq (@default_target@, linux)
+
+ifeq (@default_target@,linux)
 $(error nSIM not supported)
 endif
-ifeq ($(shell command -v nsimdrv),)
-	$(error nsimdrv is not detected)
-endif
+
+ifeq (@default_target@,newlib)
 DEJAGNU_SIM_LINK_FLAGS := \
 	-specs=semihost.specs -specs=arcv.specs \
 	-Wl,-defsym=txtmem_addr=0x0 -Wl,-defsym=datamem_addr=0x10000000 \
 	-Wl,-defsym=txtmem_len=32M -Wl,-defsym=datamem_len=32M
 DEJAGNU_SIM_LDSCRIPT := -Tarcv.ld
+else
+DEJAGNU_SIM_LINK_FLAGS := \
+	--oslib=semihost --crt0=arcv-semihost -specs=picolibcpp.specs \
+	-Wl,-defsym=__flash=0x0 -Wl,-defsym=__ram=0x10000000 \
+	-Wl,-defsym=__flash_size=32M -Wl,-defsym=__ram_size=32M
+DEJAGNU_SIM_LDSCRIPT :=
+endif
+
 SIM_PATH:=$(srcdir)/scripts/wrapper/nsim:$(srcdir)/scripts
 SIM_PREPARE:=PATH="$(SIM_PATH):$(INSTALL_DIR)/bin:$(PATH)" RISC_V_SYSROOT="$(SYSROOT)" \
 	DEJAGNU_SIM_LINK_FLAGS="$(DEJAGNU_SIM_LINK_FLAGS)"; export DEJAGNU_SIM_LINK_FLAGS; \
 	DEJAGNU_SIM_LDSCRIPT="$(DEJAGNU_SIM_LDSCRIPT)"; export DEJAGNU_SIM_LDSCRIPT;
 SIM_STAMP:=
+
 else
 ifeq ($(SIM),qemu)
 SIM_PATH:=$(srcdir)/scripts/wrapper/qemu:$(srcdir)/scripts
@@ -1652,7 +1668,17 @@ stamps/check-gcc-newlib: stamps/build-gcc-newlib-stage2 $(SIM_STAMP) stamps/buil
 	date > $@
 
 stamps/check-gcc-newlib-nano: stamps/build-gcc-newlib-stage2 $(SIM_STAMP) stamps/build-dejagnu
-	$(SIM_PREPARE) $(MAKE) -C build-gcc-newlib-stage2 check-gcc "RUNTESTFLAGS=$(RUNTESTFLAGS) --target_board='$(NEWLIB_NANO_TARGET_BOARDS)'"
+	$(SIM_PREPARE_NANO) $(MAKE) -C build-gcc-newlib-stage2 check-gcc "RUNTESTFLAGS=$(RUNTESTFLAGS) --target_board='$(NEWLIB_NANO_TARGET_BOARDS)'"
+	mkdir -p $(dir $@)
+	date > $@
+
+stamps/check-gcc-picolibc: stamps/build-gcc-picolibc-stage2 $(SIM_STAMP) stamps/build-dejagnu
+	$(SIM_PREPARE) $(MAKE) -C build-gcc-picolibc-stage2 check-gcc "RUNTESTFLAGS=$(RUNTESTFLAGS) --target_board='$(NEWLIB_TARGET_BOARDS)'"
+	mkdir -p $(dir $@)
+	date > $@
+
+stamps/check-gcc-picolibc-nano: stamps/build-gcc-picolibc-stage2-nano $(SIM_STAMP) stamps/build-dejagnu
+	$(SIM_PREPARE_NANO) $(MAKE) -C build-gcc-picolibc-stage2 check-gcc "RUNTESTFLAGS=$(RUNTESTFLAGS) --target_board='$(NEWLIB_NANO_TARGET_BOARDS)'"
 	mkdir -p $(dir $@)
 	date > $@
 
@@ -1721,6 +1747,14 @@ stamps/check-binutils-newlib-nano: stamps/build-gcc-newlib-stage2 $(SIM_STAMP) s
 	$(SIM_PREPARE_NANO) $(MAKE) -C build-binutils-newlib check-binutils check-gas check-ld -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
 	date > $@
 
+stamps/check-binutils-picolibc: stamps/build-gcc-picolibc-stage2 $(SIM_STAMP) stamps/build-dejagnu
+	$(SIM_PREPARE) $(MAKE) -C build-binutils-picolibc check-binutils check-gas check-ld -k "RUNTESTFLAGS=--target_board='$(NEWLIB_TARGET_BOARDS)'" || true
+	date > $@
+
+stamps/check-binutils-picolibc-nano: stamps/build-gcc-picolibc-stage2-nano $(SIM_STAMP) stamps/build-dejagnu
+	$(SIM_PREPARE_NANO) $(MAKE) -C build-binutils-picolibc check-binutils check-gas check-ld -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
+	date > $@
+
 stamps/check-binutils-linux: stamps/build-gcc-linux-stage2 $(SIM_STAMP) stamps/build-dejagnu
 	$(SIM_PREPARE) $(MAKE) -C build-binutils-linux check-binutils check-gas check-ld -k "RUNTESTFLAGS=--target_board='$(GLIBC_TARGET_BOARDS)'" || true
 	date > $@
@@ -1731,6 +1765,14 @@ stamps/check-gdb-newlib: stamps/build-gcc-newlib-stage2 stamps/build-gdb-newlib 
 
 stamps/check-gdb-newlib-nano: stamps/build-gcc-newlib-stage2 stamps/build-gdb-newlib $(SIM_STAMP) stamps/build-dejagnu
 	$(SIM_PREPARE_NANO) $(MAKE) -C build-gdb-newlib check-gdb -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
+	date > $@
+
+stamps/check-gdb-picolibc: stamps/build-gcc-picolibc-stage2 stamps/build-gdb-picolibc $(SIM_STAMP) stamps/build-dejagnu
+	$(SIM_PREPARE) $(MAKE) -C build-gdb-picolibc check-gdb -k "RUNTESTFLAGS=--target_board='$(NEWLIB_TARGET_BOARDS)'" || true
+	date > $@
+
+stamps/check-gdb-picolibc-nano: stamps/build-gcc-picolibc-stage2-nano stamps/build-gdb-picolibc $(SIM_STAMP) stamps/build-dejagnu
+	$(SIM_PREPARE_NANO) $(MAKE) -C build-gdb-picolibc check-gdb -k "RUNTESTFLAGS=--target_board='$(NEWLIB_NANO_TARGET_BOARDS)'" || true
 	date > $@
 
 stamps/check-gdb-linux: stamps/build-gcc-linux-stage2 stamps/build-gdb-linux $(SIM_STAMP) stamps/build-dejagnu
