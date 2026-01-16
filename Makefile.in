@@ -201,11 +201,14 @@ REGRESSION_TEST_LIST = gcc
 
 .PHONY: check
 check: check-@default_target@
-.PHONY: check-linux check-newlib
+.PHONY: check-linux check-newlib check-picolibc
 check-linux: $(patsubst %,check-%-linux,$(REGRESSION_TEST_LIST))
 check-newlib: $(patsubst %,check-%-newlib,$(REGRESSION_TEST_LIST))
 check-newlib-nano: $(patsubst %,check-%-newlib-nano,$(REGRESSION_TEST_LIST))
-.PHONY: check-gcc check-gcc-linux check-gcc-newlib check-gcc-newlib-nano
+check-picolibc: $(patsubst %,check-%-picolibc,$(REGRESSION_TEST_LIST))
+check-picolibc-nano: $(patsubst %,check-%-picolibc-nano,$(REGRESSION_TEST_LIST))
+.PHONY: check-gcc check-gcc-linux check-gcc-newlib check-gcc-newlib-nano \
+	check-gcc-picolibc check-gcc-picolibc-nano
 check-gcc: check-gcc-@default_target@
 check-gcc-linux: stamps/check-gcc-linux
 check-gcc-newlib: stamps/check-gcc-newlib
