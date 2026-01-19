@@ -177,11 +177,6 @@ FAIL: gcc.target/riscv/cpymemsi-2.c   -O2 -flto -fno-use-linker-plugin -flto-par
 FAIL: gcc.target/riscv/cpymemsi-2.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects   scan-assembler-times \t(call|tail)\tmemcpy 6
 FAIL: gcc.target/riscv/cpymemsi-2.c   -O2   scan-assembler-times \t(call|tail)\tmemcpy 6
 FAIL: gcc.target/riscv/cpymemsi-2.c   -O3 -g   scan-assembler-times \t(call|tail)\tmemcpy 6
-FAIL: gcc.target/riscv/interrupt-misaligned.c   -O0   check-function-bodies interrupt
-FAIL: gcc.target/riscv/interrupt-misaligned.c   -O1   check-function-bodies interrupt
-FAIL: gcc.target/riscv/interrupt-misaligned.c   -O2   check-function-bodies interrupt
-FAIL: gcc.target/riscv/interrupt-misaligned.c   -O3 -g   check-function-bodies interrupt
-FAIL: gcc.target/riscv/interrupt-misaligned.c   -Os   check-function-bodies interrupt
 FAIL: gcc.target/riscv/round.c   -O0  (test for excess errors)
 FAIL: gcc.target/riscv/round.c   -O1  (test for excess errors)
 FAIL: gcc.target/riscv/round.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  (test for excess errors)
@@ -230,21 +225,9 @@ FAIL: gcc.target/riscv/rvv/autovec/binop/vsub-rv32gcv-nofm.c -ftree-vectorize -O
 FAIL: gcc.target/riscv/rvv/autovec/binop/vsub-rv32gcv-nofm.c -ftree-vectorize -O3 -mrvv-max-lmul=m8  scan-assembler-times \\tvfrsub\\.vf 6
 FAIL: gcc.target/riscv/rvv/autovec/binop/vsub-rv32gcv-nofm.c -ftree-vectorize -O3 -mrvv-max-lmul=m8  scan-assembler-times \\tvfsub\\.vv 3
 FAIL: gcc.target/riscv/rvv/autovec/bug-3.c -O3 -ftree-vectorize  check-function-bodies foo
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-10.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v1df_RET1_ARG3
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-10.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v2sf_RET1_ARG2
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-10.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v4sf_RET1_ARG2
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-8.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v1di_RET1_ARG3
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-8.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v2si_RET1_ARG2
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-9.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v1df_RET1_ARG3
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-9.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v2sf_RET1_ARG2
-FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-9.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v4sf_RET1_ARG2
 FAIL: gcc.target/riscv/rvv/base/cpymem-strategy-2.c scan-assembler-times call\\tmemcpy 1
 FAIL: gcc.target/riscv/rvv/base/setmem-1.c check-function-bodies f2
 FAIL: gcc.target/riscv/rvv/base/setmem-1.c check-function-bodies f3
-FAIL: gcc.target/riscv/rvv/base/spill-10.c check-function-bodies stach_check_alloca_1
-FAIL: gcc.target/riscv/rvv/base/spill-8.c check-function-bodies stach_check_alloca_1
-FAIL: gcc.target/riscv/rvv/base/spill-8.c check-function-bodies stach_check_alloca_2
-FAIL: gcc.target/riscv/rvv/base/spill-9.c check-function-bodies stach_check_alloca_1
 FAIL: gcc.target/riscv/rvv/vsetvl/avl_prop-2.c   -O0   scan-assembler-times vsetivli\\tzero,\\s*1 2
 FAIL: gcc.target/riscv/rvv/vsetvl/avl_prop-2.c   -O1   scan-assembler-times vsetivli\\tzero,\\s*1 2
 FAIL: gcc.target/riscv/rvv/vsetvl/avl_prop-2.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none   scan-assembler-times vsetivli\\tzero,\\s*1 2
