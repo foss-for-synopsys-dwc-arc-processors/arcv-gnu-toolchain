@@ -1,15 +1,8 @@
 #
 # ARC-V RHX-100 (arc-2025.09 release known failures.)
 #
-FAIL: gcc.dg/pr49496.c (test for excess errors)
 FAIL: gcc.dg/pr69634.c (test for excess errors)
 FAIL: gcc.dg/pr90838-2.c scan-tree-dump forwprop2 "= \\.CTZ"
-FAIL: gcc.dg/pr94166.c (test for excess errors)
-FAIL: gcc.dg/pr94167.c (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O2  (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O3 -g  (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  (test for excess errors)
 FAIL: gcc.dg/torture/pr113026-1.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions   (test for bogus messages, line 10)
 FAIL: gcc.dg/tree-ssa/pr83403-1.c scan-tree-dump-times lim2 "Executing store motion of" 10
 FAIL: gcc.dg/tree-ssa/pr83403-2.c scan-tree-dump-times lim2 "Executing store motion of" 10
@@ -558,6 +551,26 @@ UNRESOLVED: gcc.target/riscv/rvv/autovec/vls-vlmax/shuffle-slide.c -std=c99 -O3 
 UNRESOLVED: gcc.target/riscv/rvv/autovec/vls-vlmax/shuffle-slide.c -std=c99 -O3 -ftree-vectorize -mrvv-vector-bits=zvl  scan-assembler-not vrgather
 UNRESOLVED: gcc.target/riscv/rvv/autovec/vls-vlmax/shuffle-slide.c -std=c99 -O3 -ftree-vectorize -mrvv-vector-bits=zvl  scan-assembler-not vmerge
 
+FAIL: gcc.target/riscv/interrupt-misaligned.c   -O0   check-function-bodies interrupt
+FAIL: gcc.target/riscv/interrupt-misaligned.c   -O1   check-function-bodies interrupt
+FAIL: gcc.target/riscv/interrupt-misaligned.c   -O2   check-function-bodies interrupt
+FAIL: gcc.target/riscv/interrupt-misaligned.c   -O3 -g   check-function-bodies interrupt
+FAIL: gcc.target/riscv/interrupt-misaligned.c   -Os   check-function-bodies interrupt
+
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-10.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v1df_RET1_ARG3
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-10.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v2sf_RET1_ARG2
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-10.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v4sf_RET1_ARG2
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-8.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v1di_RET1_ARG3
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-8.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v2si_RET1_ARG2
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-9.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v1df_RET1_ARG3
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-9.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v2sf_RET1_ARG2
+FAIL: gcc.target/riscv/rvv/autovec/vls/calling-convention-9.c -O3 -ftree-vectorize -mrvv-vector-bits=scalable  check-function-bodies v4sf_RET1_ARG2
+
+FAIL: gcc.target/riscv/rvv/base/spill-10.c check-function-bodies stach_check_alloca_1
+FAIL: gcc.target/riscv/rvv/base/spill-8.c check-function-bodies stach_check_alloca_1
+FAIL: gcc.target/riscv/rvv/base/spill-8.c check-function-bodies stach_check_alloca_2
+FAIL: gcc.target/riscv/rvv/base/spill-9.c check-function-bodies stach_check_alloca_1
+
 #
 # g++
 #
@@ -565,13 +578,6 @@ FAIL: g++.dg/debug/ra1.C -gdwarf-2 -O2 (test for excess errors)
 FAIL: g++.dg/debug/ra1.C -gdwarf-2 -O3 (test for excess errors)
 FAIL: g++.dg/debug/ra1.C -gdwarf-2 -g3 -O2 (test for excess errors)
 FAIL: g++.dg/debug/ra1.C -gdwarf-2 -g3 -O3 (test for excess errors)
-FAIL: g++.dg/cpp0x/pr81325.C  -std=gnu++11 (test for excess errors)
-FAIL: g++.dg/cpp0x/pr81325.C  -std=gnu++17 (test for excess errors)
-FAIL: g++.dg/cpp0x/pr81325.C  -std=gnu++26 (test for excess errors)
 FAIL: g++.dg/opt/pr94618.C  -std=gnu++11 (test for excess errors)
 FAIL: g++.dg/opt/pr94618.C  -std=gnu++17 (test for excess errors)
 FAIL: g++.dg/opt/pr94618.C  -std=gnu++26 (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O2  (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions  (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O3 -g  (test for excess errors)
-FAIL: c-c++-common/torture/pr116189-1.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none  (test for excess errors)
