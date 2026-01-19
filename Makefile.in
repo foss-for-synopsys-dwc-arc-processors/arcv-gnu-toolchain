@@ -241,7 +241,7 @@ check-gdb-picolibc-nano: stamps/check-gdb-picolibc-nano
 
 .PHONY: report
 report: report-@default_target@
-.PHONY: report-linux report-newlib report-newlib-nano
+.PHONY: report-linux report-newlib report-newlib-nano report-picolibc report-picolibc-nano
 report-linux: $(patsubst %,report-%-linux,$(REGRESSION_TEST_LIST))
 report-newlib: $(patsubst %,report-%-newlib,$(REGRESSION_TEST_LIST))
 report-newlib-nano: $(patsubst %,report-%-newlib-nano,$(REGRESSION_TEST_LIST))
@@ -1787,6 +1787,13 @@ report-gcc-newlib: stamps/check-gcc-newlib
 
 report-gcc-newlib-nano: stamps/check-gcc-newlib-nano
 	$(srcdir)/scripts/testsuite-filter gcc newlib-nano $(srcdir)/test/allowlist `find build-gcc-newlib-stage2/gcc/testsuite/ -name *.sum |paste -sd "," -`
+
+.PHONY: report-gcc-picolibc report-gcc-picolibc-nano
+report-gcc-picolibc: stamps/check-gcc-picolibc
+	$(srcdir)/scripts/testsuite-filter gcc picolibc $(srcdir)/test/allowlist `find build-gcc-picolibc-stage2/gcc/testsuite/ -name *.sum |paste -sd "," -`
+
+report-gcc-picolib-nano: stamps/check-gcc-picolibc-nano
+	$(srcdir)/scripts/testsuite-filter gcc picolibc-nano $(srcdir)/test/allowlist `find build-gcc-picolibc-stage2/gcc/testsuite/ -name *.sum |paste -sd "," -`
 
 .PHONY: report-gcc-linux
 report-gcc-linux: stamps/check-gcc-linux
