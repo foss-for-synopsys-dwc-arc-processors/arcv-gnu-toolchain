@@ -38,8 +38,8 @@ def usage():
           " <white-list-base-dir> <testsuite.sum>" % sys.argv[0])
 
 
-def get_white_list_files(raw_arch, abi, libc, white_list_base_dir):
-    """ Return white file list according the arch, abi, libc name and component.
+def get_white_list_files(raw_arch, abi, libc, white_list_base_dir, mtune=""):
+    """ Return white file list according the arch, abi, libc, mtune and component.
     """
     white_list_files = []
     arch = Arch(raw_arch)
@@ -101,6 +101,58 @@ def get_white_list_files(raw_arch, abi, libc, white_list_base_dir):
 
         filename = "%s.%s.%s.%s.log" % (libc, arch.base_arch, ext, abi)
         append_if_exist(filename)
+
+    # Add mtune-specific patterns if mtune is specified
+    if mtune:
+        filename = "%s.log" % (mtune)
+        append_if_exist(filename)
+
+        filename = "%s.%s.log" % (arch.base_arch, mtune)
+        append_if_exist(filename)
+
+        filename = "%s.%s.log" % (mtune, abi)
+        append_if_exist(filename)
+
+        filename = "%s.%s.%s.log" % (arch.base_arch, mtune, abi)
+        append_if_exist(filename)
+
+        filename = "%s.%s.log" % (libc, mtune)
+        append_if_exist(filename)
+
+        filename = "%s.%s.%s.log" % (libc, arch.base_arch, mtune)
+        append_if_exist(filename)
+
+        filename = "%s.%s.%s.log" % (libc, mtune, abi)
+        append_if_exist(filename)
+
+        filename = "%s.%s.%s.%s.log" % (libc, arch.base_arch, mtune, abi)
+        append_if_exist(filename)
+
+        # Add mtune patterns combined with extensions
+        for ext in arch.ext:
+            filename = "%s.%s.log" % (mtune, ext)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.log" % (arch.base_arch, mtune, ext)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.log" % (mtune, ext, abi)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.%s.log" % (arch.base_arch, mtune, ext, abi)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.log" % (libc, mtune, ext)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.%s.log" % (libc, arch.base_arch, mtune, ext)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.%s.log" % (libc, mtune, ext, abi)
+            append_if_exist(filename)
+
+            filename = "%s.%s.%s.%s.%s.log" % (libc, arch.base_arch, mtune, ext, abi)
+            append_if_exist(filename)
 
     return white_list_files
 
@@ -168,9 +220,9 @@ def read_sum(sum_files):
     return unexpected_results
 
 
-def get_white_list(arch, abi, libc, white_list_base_dir, is_gcc):
+def get_white_list(arch, abi, libc, white_list_base_dir, is_gcc, mtune=""):
     white_list_files = \
-        get_white_list_files(arch, abi, libc, white_list_base_dir)
+        get_white_list_files(arch, abi, libc, white_list_base_dir, mtune)
     white_list = read_white_lists(white_list_files, is_gcc)
     return white_list
 
@@ -187,6 +239,7 @@ def filter_result(tool, libc, white_list_base_dir, unexpected_results):
             arch = ""
             abi = ""
             cmodel = ""
+            mtune = ""
             other_args = []
             for info in variation.split('/'):
                 if info.startswith('-march'):
@@ -195,13 +248,16 @@ def filter_result(tool, libc, white_list_base_dir, unexpected_results):
                     abi = info[6:]
                 elif info.startswith('-mcmodel'):
                     cmodel = info[9:]
+                elif info.startswith('-mtune'):
+                    mtune = info[7:]
+                    other_args.append(info)
                 elif info != 'riscv-sim':
                     other_args.append(info)
 
             white_list = \
                 get_white_list(arch, abi, libc,
                                os.path.join(white_list_base_dir, tool),
-                               is_gcc)
+                               is_gcc, mtune)
             # filter!
             config = (arch, abi, cmodel, ":".join(other_args))
             fail_count = 0
