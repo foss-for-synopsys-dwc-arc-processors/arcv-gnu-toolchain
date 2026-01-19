@@ -21,12 +21,14 @@ def parse_options(argv):
                       default = '')
   parser.add_argument('--cmodel', type = str, default = 'medlow',
                       help = 'The name of the cmodel, like medlow.')
+  parser.add_argument('--mtune', type = str, default = '',
+                      help = 'The name of the mtune, like arc-v-rhx-100-series.')
 
   options = parser.parse_args()
   return options
 
 # Generate only one target board like below:
-#   riscv-sim/-march=rv64gcv_zvl256b/-mabi=lp64d/-mcmodel=medlow
+#   riscv-sim/-march=rv64gcv_zvl256b/-mabi=lp64d/-mcmodel=medlow/-mtune=arc-v-rhx-100-series (if mtune specified)
 # From the config_string like below, --param is optional
 #   rv64gcv_zvl128b-lp64d:--param=riscv-autovec-lmul=m1
 def generate_one_target_board(arch_abi, flags, options):
@@ -34,14 +36,20 @@ def generate_one_target_board(arch_abi, flags, options):
   arch = arch_and_abi[0]
   abi = arch_and_abi[1]
 
+  # Build base target board string
+  base_target = "{0}/-march={1}/-mabi={2}/-mcmodel={3}".format(
+    options.sim_name, arch, abi, options.cmodel)
+
+  # Add mtune if specified and not empty
+  if options.mtune and options.mtune.strip():
+    base_target += "/-mtune={0}".format(options.mtune)
+
   if len(flags) == 0:
-    return "{0}/-march={1}/-mabi={2}/-mcmodel={3}".format(
-      options.sim_name, arch, abi, options.cmodel)
+    return base_target
 
   flags = flags.replace(":", "/")
 
-  return "{0}/-march={1}/-mabi={2}/-mcmodel={3}/{4}".format(
-    options.sim_name, arch, abi, options.cmodel, flags)
+  return "{0}/{1}".format(base_target, flags)
 
 def main(argv):
   options = parse_options(argv)
