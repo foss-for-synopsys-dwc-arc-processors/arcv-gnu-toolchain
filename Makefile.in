@@ -1018,15 +1018,15 @@ PICOLIBC_RELEASE_LAYOUT_SETTINGS := \
 
 PICOLIBC_NSIM_LAYOUT_SETTINGS := \
 	--flash-addr "0x00000000" \
-	--flash-size "4M" \
+	--flash-size "32M" \
 	--ram-addr "0x40000000" \
-	--ram-size "4M"
+	--ram-size "32M"
 
 PICOLIBC_QEMU_LAYOUT_SETTINGS := \
 	--flash-addr "0x80000000" \
-	--flash-size "4M" \
-	--ram-addr "0x80020000" \
-	--ram-size "4M"
+	--flash-size "32M" \
+	--ram-addr "0x82000000" \
+	--ram-size "32M"
 
 ifeq ($(SIM),nsim)
 PICOLIBC_TEST_LAYOUT_SETTINGS := $(PICOLIBC_NSIM_LAYOUT_SETTINGS)
