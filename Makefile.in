@@ -72,12 +72,15 @@ export PATH AWK SED
 
 MULTILIB_FLAGS := @multilib_flags@
 MULTILIB_GEN := @multilib_gen@
+MULTILIB_LIST_FLAGS := @multilib_list_flags@
 ifeq ($(MULTILIB_GEN),)
 NEWLIB_MULTILIB_NAMES := @newlib_multilib_names@
 GCC_MULTILIB_FLAGS := $(MULTILIB_FLAGS)
+GCC_MULTILIB_LIST_FLAGS := $(MULTILIB_LIST_FLAGS)
 else
 NEWLIB_MULTILIB_NAMES := $(shell echo "$(MULTILIB_GEN)" | $(SED) 's/;/\n/g' | $(SED) '/^$$/d' | $(AWK) '{split($$0,a,"-"); printf "%s-%s", (NR==1?a[1]:" "a[1]),a[2]}')
 GCC_MULTILIB_FLAGS := $(MULTILIB_FLAGS) --with-multilib-generator="$(MULTILIB_GEN)"
+GCC_MULTILIB_LIST_FLAGS := $(MULTILIB_LIST_FLAGS)
 endif
 GLIBC_MULTILIB_NAMES := @glibc_multilib_names@
 GCC_CHECKING_FLAGS := @gcc_checking@
@@ -751,6 +754,7 @@ stamps/build-gcc-newlib-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binuti
 		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(GCC_MULTILIB_FLAGS) \
+		$(GCC_MULTILIB_LIST_FLAGS) \
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
@@ -867,6 +871,7 @@ stamps/build-gcc-newlib-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-newlib
 		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(GCC_MULTILIB_FLAGS) \
+		$(GCC_MULTILIB_LIST_FLAGS) \
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
@@ -954,6 +959,7 @@ stamps/build-gcc-picolibc-stage1: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-binu
 		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(GCC_MULTILIB_FLAGS) \
+		$(GCC_MULTILIB_LIST_FLAGS) \
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
@@ -1085,6 +1091,7 @@ stamps/build-gcc-picolibc-stage2: $(GCC_SRCDIR) $(GCC_SRC_GIT) stamps/build-pico
 		--src=$(gccsrcdir) \
 		$(GCC_CHECKING_FLAGS) \
 		$(GCC_MULTILIB_FLAGS) \
+		$(GCC_MULTILIB_LIST_FLAGS) \
 		$(WITH_ABI) \
 		$(WITH_ARCH) \
 		$(WITH_TUNE) \
