@@ -1,11 +1,10 @@
 #
-# ARC-V RPX-100 (arc-2026.03 release known failures.)
+# ARC-V {mtune^^} (arc-2026.03 release known failures.)
 #
 
 #
 # gcc
 #
-ERROR: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-55/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 FAIL: gcc.dg/torture/pr107115.c   -O2  execution test
 FAIL: gcc.dg/torture/pr107115.c   -O3 -g  execution test
 FAIL: gcc.dg/vect/pr65310.c -flto -ffat-lto-objects  scan-tree-dump vect "can't force alignment"
@@ -78,13 +77,6 @@ FAIL: gcc.target/riscv/rvv/base/cpymem-1.c check-function-bodies f3
 FAIL: gcc.target/riscv/rvv/base/cpymem-2.c check-function-bodies f1
 FAIL: gcc.target/riscv/rvv/xtheadvector/pr114194-rv64.c check-function-bodies foo0_7
 FAIL: gcc.target/riscv/rvv/xtheadvector/pr114194-rv64.c check-function-bodies foo1_5
-FAIL: gcc.target/riscv/tlsdesc.c   -O0   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
-FAIL: gcc.target/riscv/tlsdesc.c   -O1   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
-FAIL: gcc.target/riscv/tlsdesc.c   -O2   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
-FAIL: gcc.target/riscv/tlsdesc.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
-FAIL: gcc.target/riscv/tlsdesc.c   -O2 -flto -fuse-linker-plugin -fno-fat-lto-objects   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
-FAIL: gcc.target/riscv/tlsdesc.c   -O3 -g   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
-FAIL: gcc.target/riscv/tlsdesc.c   -Os   scan-assembler-times ld\t[a-x0-9]+,%tlsdesc_load_lo 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O2   scan-assembler-times th.mulah\t 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O2   scan-assembler-times th.mulaw\t 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O2 -flto -fno-use-linker-plugin -flto-partition=none   scan-assembler-times th.mulah\t 1
@@ -95,11 +87,9 @@ FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O3 -g   scan-assembler-times th.
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O3 -g   scan-assembler-times th.mulaw\t 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mulah\t 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mulaw\t 1
-UNRESOLVED: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-55/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 UNRESOLVED: gcc.dg/pr108139.c scan-tree-dump-not vrp2 "Folding predicate"
 
 #
 # g++
 #
-FAIL: g++.dg/modules/pr105169 link
-FAIL: g++.dg/tree-ssa/copyprop.C   (test for excess errors)
+
