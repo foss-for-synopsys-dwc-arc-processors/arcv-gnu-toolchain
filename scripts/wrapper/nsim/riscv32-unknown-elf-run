@@ -5,7 +5,7 @@ isa="$(march-to-cpu-opt --elf-file-path $1 --print-nsim-isa)"
 
 nsimdrv \
     -p nsim_isa_family=${family} \
-    -p nsim_isa_ext=${isa} \
+    -p nsim_isa_ext=${isa}.zicsr \
     -p nsim_semihosting=1 \
     -p enable_exceptions=0 \
     "$@"
