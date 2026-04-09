@@ -5,7 +5,6 @@
 #
 # gcc
 #
-ERROR: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-55/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 FAIL: gcc.dg/torture/pr107115.c   -O2  execution test
 FAIL: gcc.dg/torture/pr107115.c   -O3 -g  execution test
 FAIL: gcc.dg/vect/pr65310.c -flto -ffat-lto-objects  scan-tree-dump vect "can't force alignment"
@@ -95,7 +94,6 @@ FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O3 -g   scan-assembler-times th.
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -O3 -g   scan-assembler-times th.mulaw\t 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mulah\t 1
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mulaw\t 1
-UNRESOLVED: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-55/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 UNRESOLVED: gcc.dg/pr108139.c scan-tree-dump-not vrp2 "Folding predicate"
 
 #
