@@ -136,8 +136,8 @@ NEWLIB_CXX_FOR_TARGET ?= $(NEWLIB_TUPLE)-g++
 NEWLIB_TARGET_BOARDS ?= $(shell $(srcdir)/scripts/generate_target_board \
   --sim-name riscv-sim \
   --cmodel $(shell echo @cmodel@ | cut -d '=' -f2) \
-  --mtune "$(if $(MTUNE_FOR_TARGET),$(MTUNE_FOR_TARGET),\
-	     $(shell echo @WITH_TUNE@ | cut -d '=' -f2))" \
+  --mtune "$(strip $(if $(MTUNE_FOR_TARGET),$(MTUNE_FOR_TARGET),\
+	     $(shell echo @WITH_TUNE@ | cut -d '=' -f2)))" \
   --build-arch-abi "$(NEWLIB_MULTILIB_NAMES)" \
   --extra-test-arch-abi-flags-list "$(EXTRA_MULTILIB_TEST)")
 
