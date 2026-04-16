@@ -7,6 +7,8 @@
 #
 ERROR: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-51/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 UNRESOLVED: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-51/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
+# '-fcompare-debug' failure
+FAIL: gcc.dg/pr44028.c (test for excess errors)
 
 #
 # g++
