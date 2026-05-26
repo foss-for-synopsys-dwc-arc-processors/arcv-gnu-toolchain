@@ -6,6 +6,21 @@
 # gcc
 #
 
+# Failures due to scheduler just emits instructions in a different order than expected.
+# Introduced on gcc/commit/717626c1f5411c649f1225d03422f37daa706475
+#   "arcv: check whether uarch allows float memory fusions."
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O0   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O1   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O2   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O3 -g   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -Os   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O0   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O1   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O2   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O3 -g   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -Os   check-function-bodies bar
 
 #
 # g++

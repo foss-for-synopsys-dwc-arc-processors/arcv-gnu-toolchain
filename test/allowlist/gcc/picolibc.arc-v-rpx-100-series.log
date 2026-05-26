@@ -98,6 +98,11 @@ FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mul
 UNRESOLVED: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-55/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 UNRESOLVED: gcc.dg/pr108139.c scan-tree-dump-not vrp2 "Folding predicate"
 
+# Failure due to -mcmodel=medany
+# Test case introduced in gcc/commit/83893a498ed39de5f46a872a94892fa3507a9148
+#   [PATCH] RISC-V: Don't emit cm.popret when zcmp + zicfiss is enabled [PR125217]
+FAIL: gcc.target/riscv/ssp-zcmp.c   -Os   check-function-bodies printSomething
+
 #
 # g++
 #
