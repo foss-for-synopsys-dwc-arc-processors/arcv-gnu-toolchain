@@ -8,6 +8,22 @@
 ERROR: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-51/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 UNRESOLVED: /SCRATCH/arcjenkins2-1/slaves/us01-odc-custom-arcoss1/workspace/arcoss_verification/arc_gnu_toolchain_verification/baremetal_tests-51/sources/src/gcc/gcc/testsuite/gcc.dg/lto/20081212-1_0.c: error executing dg-final: expected boolean value but got ""
 
+# Failures due to scheduler just emits instructions in a different order than expected.
+# Introduced on gcc/commit/717626c1f5411c649f1225d03422f37daa706475
+#   "arcv: check whether uarch allows float memory fusions."
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O0   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O1   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O2   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -O3 -g   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_1.c   -Os   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O0   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O1   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O2   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O3 -fomit-frame-pointer -funroll-loops -fpeel-loops -ftracer -finline-functions   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -O3 -g   check-function-bodies bar
+FAIL: gcc.target/riscv/stack_save_restore_2.c   -Os   check-function-bodies bar
+
 #
 # g++
 #

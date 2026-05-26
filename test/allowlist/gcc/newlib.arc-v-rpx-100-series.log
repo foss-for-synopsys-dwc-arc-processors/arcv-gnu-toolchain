@@ -89,6 +89,11 @@ FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mul
 FAIL: gcc.target/riscv/xtheadmac-mula-muls.c   -Os   scan-assembler-times th.mulaw\t 1
 UNRESOLVED: gcc.dg/pr108139.c scan-tree-dump-not vrp2 "Folding predicate"
 
+# Failure due to -mcmodel=medany
+# Test case introduced in gcc/commit/83893a498ed39de5f46a872a94892fa3507a9148
+#   [PATCH] RISC-V: Don't emit cm.popret when zcmp + zicfiss is enabled [PR125217]
+FAIL: gcc.target/riscv/ssp-zcmp.c   -Os   check-function-bodies printSomething
+
 #
 # g++
 #
