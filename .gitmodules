@@ -5,7 +5,7 @@
 [submodule "gcc"]
 	path = gcc
 	url = https://github.com/foss-for-synopsys-dwc-arc-processors/gcc
-	branch = arc-2026.03
+	branch = arc-2026.09
 [submodule "glibc"]
 	path = glibc
 	url = https://sourceware.org/git/glibc.git
