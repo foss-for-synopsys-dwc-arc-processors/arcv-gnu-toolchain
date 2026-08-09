@@ -641,6 +641,7 @@ host_cxxflags
 host_cflags
 target_cxxflags
 target_cflags
+multilib_list_flags
 cmodel
 gcc_checking
 musl_multilib_names
@@ -738,6 +739,7 @@ with_multilib_generator
 with_extra_multilib_test
 enable_gcc_checking
 with_cmodel
+with_multilib_list
 with_target_cflags
 with_target_cxxflags
 with_host_cflags
@@ -1443,6 +1445,9 @@ Optional Packages:
                           --with-extra-multilib-test="rv64gcv-lp64;rv64gcv_zba-lp64"
   --with-cmodel           Select the code model to use when building libc and
                           libgcc [--with-cmodel=medlow]
+  --with-multilib-list=LIST
+                          select specific multilibs to build (e.g., reduced,
+                          release)
   --with-target-cflags    Add extra target flags for C for library code
   --with-target-cxxflags  Add extra target flags for C++ for library code
   --with-host-cflags      Add extra flags for C for host Binutils, GDB and GCC
@@ -4293,6 +4298,24 @@ then :
 
 else $as_nop
   cmodel=-mcmodel=medlow
+
+fi
+
+
+# Check whether --with-multilib_list was given.
+if test ${with_multilib_list+y}
+then :
+  withval=$with_multilib_list;
+else $as_nop
+  with_multilib_list=default
+
+fi
+
+if test "x$with_multilib_list" != xdefault
+then :
+  multilib_list_flags=--with-multilib-list=$with_multilib_list
+
+else $as_nop
 
 fi
 

@@ -242,6 +242,16 @@ AS_IF([test "x$with_cmodel" != x],
 	[AC_SUBST(cmodel, -mcmodel=$with_cmodel)],
 	[AC_SUBST(cmodel, -mcmodel=medlow)])
 
+AC_ARG_WITH(multilib_list,
+	[AS_HELP_STRING([--with-multilib-list=LIST],
+		[select specific multilibs to build (e.g., reduced, release)])],
+	[],
+	[with_multilib_list=default]
+	)
+AS_IF([test "x$with_multilib_list" != xdefault],
+	[AC_SUBST(multilib_list_flags,--with-multilib-list=$with_multilib_list)],
+	[AC_SUBST(multilib_list_flags,)])
+
 AC_ARG_WITH(target_cflags,
 	[AS_HELP_STRING([--with-target-cflags],
 		[Add extra target flags for C for library code])],
