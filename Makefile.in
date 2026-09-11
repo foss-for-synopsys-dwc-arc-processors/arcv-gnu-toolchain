@@ -1499,8 +1499,7 @@ stamps/build-qemu: $(QEMU_SRCDIR) $(QEMU_SRC_GIT) $(PREPARATION_STAMP) stamps/bu
 	cd $(notdir $@) && $</configure \
 		--prefix=$(INSTALL_DIR) \
 		--target-list=$(QEMU_TARGETS) \
-		--interp-prefix=$(INSTALL_DIR)/sysroot \
-		--python=python3
+		--interp-prefix=$(INSTALL_DIR)/sysroot
 	$(MAKE) -C $(notdir $@)
 	$(MAKE) -C $(notdir $@) install
 	mkdir -p $(dir $@)
