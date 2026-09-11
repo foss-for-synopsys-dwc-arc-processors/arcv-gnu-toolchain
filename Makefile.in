@@ -1467,7 +1467,33 @@ stamps/build-pk64: $(PK_SRCDIR) $(PK_SRC_GIT) stamps/build-gcc-newlib-stage2
 	mkdir -p $(dir $@)
 	date > $@
 
-stamps/build-qemu: $(QEMU_SRCDIR) $(QEMU_SRC_GIT) $(PREPARATION_STAMP)
+GLIB_VERSION := 2.72.4
+GLIB_NAME := glib-$(GLIB_VERSION)
+GLIB_ARCHIVE := $(srcdir)/contrib/$(GLIB_NAME).tar.xz
+GLIB_PREFIX := $(abspath install-glib)
+
+stamps/build-glib: $(GLIB_ARCHIVE)
+	rm -rf $@ $(notdir $@)
+	mkdir $(notdir $@)
+	tar xf $< -C $(notdir $@)
+	meson setup $(notdir $@)/build $(notdir $@)/$(GLIB_NAME) \
+		--prefix="$(GLIB_PREFIX)" \
+		--libdir=lib \
+		--buildtype=release \
+		-Ddefault_library=static \
+		-Db_staticpic=true \
+		-Dtests=false \
+		-Dnls=disabled \
+		-Dselinux=disabled \
+		-Dlibmount=disabled
+	ninja -C $(notdir $@)/build
+	ninja -C $(notdir $@)/build install
+	mkdir -p $(dir $@)
+	date > $@
+
+stamps/build-qemu: export PKG_CONFIG_PATH = $(GLIB_PREFIX)/lib/pkgconfig
+stamps/build-qemu: export PATH := $(GLIB_PREFIX)/bin:$(PATH)
+stamps/build-qemu: $(QEMU_SRCDIR) $(QEMU_SRC_GIT) $(PREPARATION_STAMP) stamps/build-glib
 	rm -rf $@ $(notdir $@)
 	mkdir $(notdir $@)
 	cd $(notdir $@) && $</configure \
